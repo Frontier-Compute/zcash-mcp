@@ -107,7 +107,7 @@ export function registerMemoTool(server: McpServer) {
     "decode_memo",
     "Decode a Zcash shielded memo field. Handles ZAP1 typed memos, ZIP 302, plain text, and raw binary.",
     {
-      memo: z.string().describe("Memo data as hex string or base64"),
+      memo: z.string().max(2048).describe("Memo data as hex string or base64 (max 1024 bytes decoded)"),
     },
     async ({ memo }) => {
       try {

@@ -2,6 +2,7 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 
 const ZAP1_API = process.env.ZAP1_API_URL ?? "https://pay.frontiercompute.io";
+const API_TIMEOUT_MS = 15_000;
 
 export function registerBalanceTool(server: McpServer) {
   server.tool(
@@ -12,7 +13,8 @@ export function registerBalanceTool(server: McpServer) {
     },
     async ({ wallet_hash }) => {
       try {
-        const res = await fetch(`${ZAP1_API}/lifecycle/${wallet_hash}`);
+        const safeHash = encodeURIComponent(wallet_hash);
+        const res = await fetch(`${ZAP1_API}/lifecycle/${safeHash}`, { signal: AbortSignal.timeout(API_TIMEOUT_MS) });
         if (!res.ok) throw new Error(`${res.status}: ${await res.text()}`);
         const data = await res.json();
         return {

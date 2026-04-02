@@ -6,9 +6,9 @@ export function registerSendTool(server: McpServer) {
     "send_shielded",
     "Generate a zcash: payment URI for shielded ZEC. Encodes address, amount, and optional memo into a scannable URI.",
     {
-      address: z.string().describe("Recipient Zcash shielded address"),
-      amount: z.number().positive().describe("Amount in ZEC"),
-      memo: z.string().optional().describe("Optional memo text (max 512 bytes)"),
+      address: z.string().regex(/^(u1|zs1|t1|t3)[a-zA-Z0-9]+$/, "Invalid Zcash address format").describe("Recipient Zcash shielded address"),
+      amount: z.number().positive().max(21_000_000).describe("Amount in ZEC"),
+      memo: z.string().max(512).optional().describe("Optional memo text (max 512 bytes)"),
       label: z.string().optional().describe("Optional label for the payment"),
     },
     async ({ address, amount, memo, label }) => {
@@ -17,9 +17,9 @@ export function registerSendTool(server: McpServer) {
         const params: string[] = [];
         params.push(`amount=${amount}`);
         if (memo) {
-          // Memo gets hex-encoded in ZIP 321
-          const hexMemo = Buffer.from(memo, "utf-8").toString("hex");
-          params.push(`memo=${hexMemo}`);
+          // ZIP 321 requires memo as base64url (RFC 4648, no padding)
+          const base64Memo = Buffer.from(memo, "utf-8").toString("base64url");
+          params.push(`memo=${base64Memo}`);
         }
         if (label) {
           params.push(`label=${encodeURIComponent(label)}`);

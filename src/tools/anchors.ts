@@ -1,6 +1,7 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 
 const ZAP1_API = process.env.ZAP1_API_URL ?? "https://pay.frontiercompute.io";
+const API_TIMEOUT_MS = 15_000;
 
 export function registerAnchorTools(server: McpServer) {
   server.tool(
@@ -9,7 +10,7 @@ export function registerAnchorTools(server: McpServer) {
     {},
     async () => {
       try {
-        const res = await fetch(`${ZAP1_API}/anchor/history`);
+        const res = await fetch(`${ZAP1_API}/anchor/history`, { signal: AbortSignal.timeout(API_TIMEOUT_MS) });
         if (!res.ok) throw new Error(`${res.status}: ${await res.text()}`);
         return {
           content: [{ type: "text" as const, text: JSON.stringify(await res.json(), null, 2) }],
@@ -27,7 +28,7 @@ export function registerAnchorTools(server: McpServer) {
     {},
     async () => {
       try {
-        const res = await fetch(`${ZAP1_API}/anchor/status`);
+        const res = await fetch(`${ZAP1_API}/anchor/status`, { signal: AbortSignal.timeout(API_TIMEOUT_MS) });
         if (!res.ok) throw new Error(`${res.status}: ${await res.text()}`);
         return {
           content: [{ type: "text" as const, text: JSON.stringify(await res.json(), null, 2) }],

@@ -2,6 +2,7 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 
 const ZAP1_API = process.env.ZAP1_API_URL ?? "https://pay.frontiercompute.io";
+const API_TIMEOUT_MS = 15_000;
 
 export function registerEventTools(server: McpServer) {
   server.tool(
@@ -13,7 +14,7 @@ export function registerEventTools(server: McpServer) {
     async ({ limit }) => {
       try {
         const n = limit ?? 20;
-        const res = await fetch(`${ZAP1_API}/events?limit=${n}`);
+        const res = await fetch(`${ZAP1_API}/events?limit=${n}`, { signal: AbortSignal.timeout(API_TIMEOUT_MS) });
         if (!res.ok) throw new Error(`${res.status}: ${await res.text()}`);
         return {
           content: [{ type: "text" as const, text: JSON.stringify(await res.json(), null, 2) }],
@@ -33,7 +34,8 @@ export function registerEventTools(server: McpServer) {
     },
     async ({ agent_id }) => {
       try {
-        const res = await fetch(`${ZAP1_API}/agent/${agent_id}`);
+        const safeId = encodeURIComponent(agent_id);
+        const res = await fetch(`${ZAP1_API}/agent/${safeId}`, { signal: AbortSignal.timeout(API_TIMEOUT_MS) });
         if (!res.ok) throw new Error(`${res.status}: ${await res.text()}`);
         return {
           content: [{ type: "text" as const, text: JSON.stringify(await res.json(), null, 2) }],

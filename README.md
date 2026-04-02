@@ -2,13 +2,13 @@
 
 Zcash MCP server. Connects AI agents to shielded Zcash operations.
 
-MCP (Model Context Protocol) is the standard way for AI models to call external tools. This server exposes 8 Zcash tools that any MCP client can use - Claude Desktop, ChatGPT, OpenClaw, or anything that speaks the protocol.
+MCP (Model Context Protocol) is the standard way for AI models to call external tools. This server exposes 12 Zcash tools that any MCP client can use - Claude Desktop, ChatGPT, OpenClaw, or anything that speaks the protocol.
 
 ## Tools
 
 | Tool | What it does |
 |------|-------------|
-| `get_balance` | Shielded balance for an address via Zebra RPC |
+| `get_balance` | ZAP1 lifecycle events and anchor status for a wallet hash |
 | `send_shielded` | Generate a zcash: payment URI (ZIP 321) |
 | `decode_memo` | Decode shielded memos - ZAP1 typed, ZIP 302, text, binary |
 | `attest_event` | Write a ZAP1 attestation to the Zcash blockchain |
@@ -16,6 +16,10 @@ MCP (Model Context Protocol) is the standard way for AI models to call external 
 | `get_stats` | ZAP1 protocol stats (leaves, anchors, types) |
 | `get_block_height` | Current chain height from Zebra |
 | `lookup_transaction` | Raw transaction data by txid |
+| `get_anchor_history` | All ZAP1 Merkle root anchors with txids and block heights |
+| `get_anchor_status` | Current Merkle tree state: root, unanchored leaves, recommendation |
+| `get_events` | Recent ZAP1 attestation events with type, wallet hash, leaf hash |
+| `get_agent_status` | Attestation summary for a ZAP1 agent ID |
 
 ## Install
 
@@ -74,8 +78,8 @@ node dist/index.js
 
 ## Dependencies
 
-- A running [Zebra](https://github.com/ZcashFoundation/zebra) node for chain queries (get_balance, get_block_height, lookup_transaction)
-- The ZAP1 API at pay.frontiercompute.io for attestation tools (attest_event, verify_proof, get_stats)
+- A running [Zebra](https://github.com/ZcashFoundation/zebra) node for chain queries (get_block_height, lookup_transaction)
+- The ZAP1 API at pay.frontiercompute.io for attestation tools (get_balance, attest_event, verify_proof, get_stats, get_anchor_history, get_anchor_status, get_events, get_agent_status)
 - Memo decoding works locally with no external dependencies
 
 ## License

@@ -2,12 +2,14 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 
 const ZEBRA_RPC = process.env.ZEBRA_RPC_URL ?? "http://127.0.0.1:8232";
+const RPC_TIMEOUT_MS = 30_000;
 
 async function zebraRpc(method: string, params: unknown[] = []): Promise<unknown> {
   const res = await fetch(ZEBRA_RPC, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ jsonrpc: "2.0", id: 1, method, params }),
+    signal: AbortSignal.timeout(RPC_TIMEOUT_MS),
   });
   const json = (await res.json()) as { result?: unknown; error?: { message: string } };
   if (json.error) throw new Error(json.error.message);
@@ -44,7 +46,7 @@ export function registerChainTools(server: McpServer) {
     "lookup_transaction",
     "Get raw transaction data by txid from Zebra.",
     {
-      txid: z.string().describe("Transaction ID (64-char hex)"),
+      txid: z.string().regex(/^[0-9a-fA-F]{64}$/, "txid must be 64-char hex").describe("Transaction ID (64-char hex)"),
       verbose: z.boolean().optional().describe("Return decoded JSON instead of raw hex (default true)"),
     },
     async ({ txid, verbose }) => {

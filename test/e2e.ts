@@ -43,7 +43,7 @@ async function main() {
   console.log("zcash-mcp E2E tests");
   console.log(`  Zebra: ${ZEBRA}`);
   console.log(`  ZAP1: ${ZAP1}`);
-  console.log(`  API Key: ${KEY ? KEY.slice(0, 10) + "..." : "NONE"}`);
+  console.log(`  API Key: ${KEY ? "SET" : "NONE"}`);
   console.log("");
 
   // 1. get_block_height

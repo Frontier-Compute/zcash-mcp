@@ -1,6 +1,7 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 
 const ZAP1_API = process.env.ZAP1_API_URL ?? "https://pay.frontiercompute.io";
+const API_TIMEOUT_MS = 15_000;
 
 export function registerStatsTool(server: McpServer) {
   server.tool(
@@ -9,7 +10,7 @@ export function registerStatsTool(server: McpServer) {
     {},
     async () => {
       try {
-        const res = await fetch(`${ZAP1_API}/stats`);
+        const res = await fetch(`${ZAP1_API}/stats`, { signal: AbortSignal.timeout(API_TIMEOUT_MS) });
 
         if (!res.ok) {
           const text = await res.text();

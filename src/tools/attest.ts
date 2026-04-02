@@ -8,13 +8,13 @@ export function registerAttestTool(server: McpServer) {
     "attest_event",
     "Create a ZAP1 attestation event on Zcash. Writes a typed lifecycle, governance, or agent event to the Merkle tree. Returns leaf hash for verification.",
     {
-      event_type: z.string().describe("Event type: DEPLOYMENT, CONTRACT_ANCHOR, AGENT_ACTION, GOVERNANCE_PROPOSAL, etc."),
-      wallet_hash: z.string().describe("Wallet hash or agent identifier"),
-      serial_number: z.string().optional().describe("Serial number or version tag"),
-      action_type: z.string().optional().describe("Action type for AGENT_ACTION events"),
-      input_hash: z.string().optional().describe("SHA-256 of action input"),
-      output_hash: z.string().optional().describe("SHA-256 of action output"),
-      proposal_id: z.string().optional().describe("Proposal ID for governance events"),
+      event_type: z.string().max(64).describe("Event type: DEPLOYMENT, CONTRACT_ANCHOR, AGENT_ACTION, GOVERNANCE_PROPOSAL, etc."),
+      wallet_hash: z.string().max(128).describe("Wallet hash or agent identifier"),
+      serial_number: z.string().max(128).optional().describe("Serial number or version tag"),
+      action_type: z.string().max(64).optional().describe("Action type for AGENT_ACTION events"),
+      input_hash: z.string().regex(/^[0-9a-fA-F]{64}$/).optional().describe("SHA-256 of action input"),
+      output_hash: z.string().regex(/^[0-9a-fA-F]{64}$/).optional().describe("SHA-256 of action output"),
+      proposal_id: z.string().max(128).optional().describe("Proposal ID for governance events"),
       api_key: z.string().optional().describe("ZAP1 API key (or set ZAP1_API_KEY env var)"),
     },
     async ({ api_key, ...fields }) => {
@@ -39,6 +39,7 @@ export function registerAttestTool(server: McpServer) {
             Authorization: `Bearer ${key}`,
           },
           body: JSON.stringify(fields),
+          signal: AbortSignal.timeout(15_000),
         });
 
         if (!res.ok) {
