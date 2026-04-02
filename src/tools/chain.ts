@@ -17,16 +17,16 @@ async function zebraRpc(method: string, params: unknown[] = []): Promise<unknown
 export function registerChainTools(server: McpServer) {
   server.tool(
     "get_block_height",
-    "Get the current Zcash blockchain height from Zebra.",
+    "Get the current Zcash chain height from Zebra.",
     {},
     async () => {
       try {
-        const height = await zebraRpc("getblockcount");
+        const info = (await zebraRpc("getblockchaininfo")) as { blocks?: number };
         return {
           content: [
             {
               type: "text" as const,
-              text: JSON.stringify({ height }, null, 2),
+              text: JSON.stringify({ height: info.blocks }, null, 2),
             },
           ],
         };
@@ -42,20 +42,20 @@ export function registerChainTools(server: McpServer) {
 
   server.tool(
     "lookup_transaction",
-    "Get raw transaction details from Zebra by txid.",
+    "Get raw transaction data by txid from Zebra.",
     {
-      txid: z.string().describe("Transaction ID (hex)"),
-      verbose: z.boolean().optional().describe("Return decoded JSON instead of raw hex (default: true)"),
+      txid: z.string().describe("Transaction ID (64-char hex)"),
+      verbose: z.boolean().optional().describe("Return decoded JSON instead of raw hex (default true)"),
     },
     async ({ txid, verbose }) => {
       try {
         const verbosity = verbose === false ? 0 : 1;
-        const tx = await zebraRpc("getrawtransaction", [txid, verbosity]);
+        const data = await zebraRpc("getrawtransaction", [txid, verbosity]);
         return {
           content: [
             {
               type: "text" as const,
-              text: JSON.stringify(tx, null, 2),
+              text: typeof data === "string" ? data : JSON.stringify(data, null, 2),
             },
           ],
         };

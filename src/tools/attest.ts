@@ -6,13 +6,18 @@ const ZAP1_API = process.env.ZAP1_API_URL ?? "https://pay.frontiercompute.io";
 export function registerAttestTool(server: McpServer) {
   server.tool(
     "attest_event",
-    "Create a ZAP1 attestation. Writes a typed memo to the Zcash blockchain via the ZAP1 protocol, returning a leaf hash and Merkle proof.",
+    "Create a ZAP1 attestation event on Zcash. Writes a typed lifecycle, governance, or agent event to the Merkle tree. Returns leaf hash for verification.",
     {
-      type_byte: z.number().int().min(0).max(255).describe("ZAP1 type byte (e.g. 0x03 for attestation)"),
-      payload: z.string().describe("Payload string to attest"),
+      event_type: z.string().describe("Event type: DEPLOYMENT, CONTRACT_ANCHOR, AGENT_ACTION, GOVERNANCE_PROPOSAL, etc."),
+      wallet_hash: z.string().describe("Wallet hash or agent identifier"),
+      serial_number: z.string().optional().describe("Serial number or version tag"),
+      action_type: z.string().optional().describe("Action type for AGENT_ACTION events"),
+      input_hash: z.string().optional().describe("SHA-256 of action input"),
+      output_hash: z.string().optional().describe("SHA-256 of action output"),
+      proposal_id: z.string().optional().describe("Proposal ID for governance events"),
       api_key: z.string().optional().describe("ZAP1 API key (or set ZAP1_API_KEY env var)"),
     },
-    async ({ type_byte, payload, api_key }) => {
+    async ({ api_key, ...fields }) => {
       const key = api_key ?? process.env.ZAP1_API_KEY;
       if (!key) {
         return {
@@ -33,7 +38,7 @@ export function registerAttestTool(server: McpServer) {
             "Content-Type": "application/json",
             Authorization: `Bearer ${key}`,
           },
-          body: JSON.stringify({ type_byte, payload }),
+          body: JSON.stringify(fields),
         });
 
         if (!res.ok) {

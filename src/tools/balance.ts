@@ -1,35 +1,25 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 
-const ZEBRA_RPC = process.env.ZEBRA_RPC_URL ?? "http://127.0.0.1:8232";
-
-async function zebraRpc(method: string, params: unknown[] = []): Promise<unknown> {
-  const res = await fetch(ZEBRA_RPC, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ jsonrpc: "2.0", id: 1, method, params }),
-  });
-  const json = (await res.json()) as { result?: unknown; error?: { message: string } };
-  if (json.error) throw new Error(json.error.message);
-  return json.result;
-}
+const ZAP1_API = process.env.ZAP1_API_URL ?? "https://pay.frontiercompute.io";
 
 export function registerBalanceTool(server: McpServer) {
   server.tool(
     "get_balance",
-    "Get shielded ZEC balance for an address or viewing key via Zebra RPC",
+    "Get attestation and anchor status for a wallet hash via ZAP1 API. Returns lifecycle events, leaf count, and verification links.",
     {
-      address: z.string().describe("Zcash shielded address or viewing key"),
+      wallet_hash: z.string().describe("Wallet hash or agent ID to look up"),
     },
-    async ({ address }) => {
+    async ({ wallet_hash }) => {
       try {
-        // z_getbalance returns the balance for a given address
-        const balance = await zebraRpc("z_getbalance", [address]);
+        const res = await fetch(`${ZAP1_API}/lifecycle/${wallet_hash}`);
+        if (!res.ok) throw new Error(`${res.status}: ${await res.text()}`);
+        const data = await res.json();
         return {
           content: [
             {
               type: "text" as const,
-              text: JSON.stringify({ address, balance }, null, 2),
+              text: JSON.stringify(data, null, 2),
             },
           ],
         };

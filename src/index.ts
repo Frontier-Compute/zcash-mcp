@@ -10,13 +10,14 @@ import { registerAttestTool } from "./tools/attest.js";
 import { registerVerifyTool } from "./tools/verify.js";
 import { registerStatsTool } from "./tools/stats.js";
 import { registerChainTools } from "./tools/chain.js";
+import { registerAnchorTools } from "./tools/anchors.js";
+import { registerEventTools } from "./tools/events.js";
 
 const server = new McpServer({
   name: "zcash-mcp",
-  version: "0.1.0",
+  version: "0.2.0",
 });
 
-// Register all tools
 registerBalanceTool(server);
 registerSendTool(server);
 registerMemoTool(server);
@@ -24,11 +25,13 @@ registerAttestTool(server);
 registerVerifyTool(server);
 registerStatsTool(server);
 registerChainTools(server);
+registerAnchorTools(server);
+registerEventTools(server);
 
 async function main() {
   const transport = new StdioServerTransport();
   await server.connect(transport);
-  console.error("zcash-mcp server running on stdio");
+  console.error("zcash-mcp server running on stdio (12 tools)");
 }
 
 main().catch((err) => {

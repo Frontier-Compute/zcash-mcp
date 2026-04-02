@@ -1,6 +1,6 @@
 {
   "name": "@frontiercompute/zcash-mcp",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Zcash MCP server - shielded operations for AI agents",
   "type": "module",
   "main": "dist/index.js",
@@ -18,6 +18,14 @@
   "devDependencies": {
     "@types/node": "^22.0.0",
     "typescript": "^5.7.0"
+  },
+  "files": [
+    "dist/",
+    "LICENSE",
+    "README.md"
+  ],
+  "peerDependencies": {
+    "zod": "^3.25 || ^4.0"
   },
   "keywords": [
     "zcash",
