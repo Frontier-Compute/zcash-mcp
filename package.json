@@ -1,0 +1,36 @@
+{
+  "name": "@frontiercompute/zcash-mcp",
+  "version": "0.1.0",
+  "description": "Zcash MCP server - shielded operations for AI agents",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "zcash-mcp": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsc --watch"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.7.0"
+  },
+  "keywords": [
+    "zcash",
+    "mcp",
+    "shielded",
+    "zap1",
+    "ai",
+    "agent"
+  ],
+  "author": "Zk-nd3r <zk-nd3r@users.noreply.github.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Frontier-Compute/zcash-mcp.git"
+  }
+}
