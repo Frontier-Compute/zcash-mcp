@@ -1,6 +1,9 @@
 # zcash-mcp
 
-Zcash MCP server. Connects AI agents to shielded Zcash operations.
+[![npm](https://img.shields.io/npm/v/@frontiercompute/zcash-mcp)](https://www.npmjs.com/package/@frontiercompute/zcash-mcp)
+[![MCP Registry](https://img.shields.io/badge/MCP_Registry-published-green)](https://registry.modelcontextprotocol.io/)
+
+Zcash MCP server. Connects AI agents to shielded Zcash operations. First privacy chain on the MCP registry.
 
 MCP (Model Context Protocol) is the standard way for AI models to call external tools. This server exposes 12 Zcash tools that any MCP client can use - Claude Desktop, ChatGPT, OpenClaw, or anything that speaks the protocol.
 
