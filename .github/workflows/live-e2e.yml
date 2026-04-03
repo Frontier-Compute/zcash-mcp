@@ -1,0 +1,61 @@
+name: live-e2e
+
+on:
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: "17 */6 * * *"
+  workflow_dispatch:
+
+jobs:
+  live:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Check live test configuration
+        id: config
+        env:
+          ZEBRA_RPC_URL: ${{ secrets.ZEBRA_RPC_URL }}
+          ZAP1_API_URL: ${{ secrets.ZAP1_API_URL }}
+          ZAP1_API_KEY: ${{ secrets.ZAP1_API_KEY }}
+        run: |
+          missing=0
+          for name in ZEBRA_RPC_URL ZAP1_API_URL ZAP1_API_KEY; do
+            if [ -z "${!name}" ]; then
+              echo "Missing $name"
+              missing=1
+            fi
+          done
+          if [ "$missing" -eq 1 ]; then
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          echo "ready=true" >> "$GITHUB_OUTPUT"
+
+      - name: Skip live E2E without secrets
+        if: steps.config.outputs.ready != 'true'
+        run: echo "Skipping live E2E because required secrets are not configured."
+
+      - name: Install dependencies
+        if: steps.config.outputs.ready == 'true'
+        run: npm ci
+
+      - name: Run live verification
+        if: steps.config.outputs.ready == 'true'
+        env:
+          ZEBRA_RPC_URL: ${{ secrets.ZEBRA_RPC_URL }}
+          ZAP1_API_URL: ${{ secrets.ZAP1_API_URL }}
+          ZAP1_API_KEY: ${{ secrets.ZAP1_API_KEY }}
+          ZAP1_AGENT_ID: ${{ secrets.ZAP1_AGENT_ID }}
+        run: npm run test:live

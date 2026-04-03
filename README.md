@@ -71,10 +71,34 @@ The server communicates over stdio using JSON-RPC. Point your MCP client at the 
 ```bash
 git clone https://github.com/Frontier-Compute/zcash-mcp.git
 cd zcash-mcp
-npm install
+npm ci
 npm run build
 node dist/index.js
 ```
+
+## Testing
+
+Offline verification covers the built stdio server and a clean-room install from the packed npm tarball:
+
+```bash
+npm run test:offline
+```
+
+Live verification hits a real Zebra RPC and ZAP1 API:
+
+```bash
+ZEBRA_RPC_URL=http://127.0.0.1:8232 \
+ZAP1_API_URL=http://127.0.0.1:3080 \
+ZAP1_API_KEY=your-key-here \
+npm run test:live
+```
+
+`test:live` drives the MCP server over stdio and exercises the live tool surface, not just the underlying HTTP endpoints. Set `ZAP1_AGENT_ID` if you want the `get_agent_status` check to target a specific deployed agent.
+
+GitHub Actions mirrors that split:
+
+- `.github/workflows/offline-ci.yml` runs deterministic packaging and MCP handshake checks on every push and pull request.
+- `.github/workflows/live-e2e.yml` runs secret-backed live checks on `main`, on a schedule, and by manual dispatch.
 
 ## Dependencies
 

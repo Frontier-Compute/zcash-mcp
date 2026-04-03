@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+import process from "node:process";
+
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 
@@ -31,6 +33,7 @@ registerEventTools(server);
 async function main() {
   const transport = new StdioServerTransport();
   await server.connect(transport);
+  process.stdin.resume();
   console.error("zcash-mcp server running on stdio (12 tools)");
 }
 
