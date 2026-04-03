@@ -1,0 +1,29 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.Zk-nd3r/zcash-mcp",
+  "description": "Zcash shielded operations for AI agents. Memo decoding, attestation, proof verification.",
+  "repository": {
+    "url": "https://github.com/Frontier-Compute/zcash-mcp",
+    "source": "github"
+  },
+  "version": "0.2.2",
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "@frontiercompute/zcash-mcp",
+      "version": "0.2.2",
+      "transport": {
+        "type": "stdio"
+      },
+      "environmentVariables": [
+        {
+          "description": "ZAP1 API key for write operations",
+          "isRequired": false,
+          "format": "string",
+          "isSecret": true,
+          "name": "ZAP1_API_KEY"
+        }
+      ]
+    }
+  ]
+}
