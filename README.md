@@ -28,7 +28,7 @@ MCP (Model Context Protocol) is the standard way for AI models to call external 
 | `zcash_prove_payment` | Fetch the full Merkle proof bundle for a leaf hash |
 | `zcash_identity_register` | Register an agent identity via AGENT_REGISTER attestation |
 | `zcash_reputation_score` | Fetch agent bond data and policy compliance as a reputation object |
-| `zcash_crosschain_swap` | Cross-chain swap intent: shielded ZEC to BTC, USDC, USDT via Ika or NEAR |
+| `zcash_crosschain_swap` | Cross-chain swap intent: ZEC transparent to BTC, USDC, USDT via Ika or NEAR |
 
 ## Install
 
