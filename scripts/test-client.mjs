@@ -50,7 +50,7 @@ export async function runMcpSmokeTest(serverEntry, { cwd, label }) {
     stage = "list tools";
     const tools = await client.listTools();
     assertToolRegistration(tools.tools);
-    assert.equal(tools.tools.length, 18, `${label}: tool count drifted`);
+    assert.equal(tools.tools.length, 22, `${label}: tool count drifted`);
 
     stage = "ping";
     await client.ping();

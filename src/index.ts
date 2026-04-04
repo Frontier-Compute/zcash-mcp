@@ -20,10 +20,14 @@ import { registerReceiptTool } from "./tools/receipt.js";
 import { registerIdentityTool } from "./tools/identity.js";
 import { registerReputationTool } from "./tools/reputation.js";
 import { registerCrosschainTool } from "./tools/crosschain.js";
+import { registerCreateWalletTool } from "./tools/create-wallet.js";
+import { registerSignMpcTool } from "./tools/sign-mpc.js";
+import { registerShieldTool } from "./tools/shield.js";
+import { registerVerifyEvmTool } from "./tools/verify-evm.js";
 
 const server = new McpServer({
   name: "zcash-mcp",
-  version: "1.1.0",
+  version: "1.2.0",
 });
 
 registerBalanceTool(server);
@@ -41,12 +45,16 @@ registerReceiptTool(server);
 registerIdentityTool(server);
 registerReputationTool(server);
 registerCrosschainTool(server);
+registerCreateWalletTool(server);
+registerSignMpcTool(server);
+registerShieldTool(server);
+registerVerifyEvmTool(server);
 
 async function main() {
   const transport = new StdioServerTransport();
   await server.connect(transport);
   process.stdin.resume();
-  console.error("zcash-mcp server running on stdio (18 tools)");
+  console.error("zcash-mcp server running on stdio (22 tools)");
 }
 
 main().catch((err) => {

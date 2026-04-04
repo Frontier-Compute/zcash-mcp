@@ -29,6 +29,10 @@ MCP (Model Context Protocol) is the standard way for AI models to call external 
 | `zcash_identity_register` | Register an agent identity via AGENT_REGISTER attestation |
 | `zcash_reputation_score` | Fetch agent bond data and policy compliance as a reputation object |
 | `zcash_crosschain_swap` | Cross-chain swap intent: ZEC transparent to BTC, USDC, USDT via Ika or NEAR |
+| `zcash_create_wallet` | Create a split-key wallet via Ika 2PC-MPC (secp256k1 signs for ZEC, BTC, ETH) |
+| `zcash_sign_mpc` | Sign a message hash through Ika 2PC-MPC (neither party sees the full key) |
+| `zcash_shield` | Move ZEC from transparent MPC custody to shielded Orchard pool |
+| `zcash_verify_evm` | Verify a ZAP1 Merkle proof on-chain via EVM contract (Sepolia, Base, Arbitrum) |
 
 ## Install
 
