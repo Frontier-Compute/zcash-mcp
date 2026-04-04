@@ -114,6 +114,13 @@ GitHub Actions mirrors that split:
 - The ZAP1 API at pay.frontiercompute.io for attestation tools (get_balance, attest_event, verify_proof, get_stats, get_anchor_history, get_anchor_status, get_events, get_agent_status)
 - Memo decoding works locally with no external dependencies
 
+## Related packages
+
+| Package | What it does |
+|---------|-------------|
+| [@frontiercompute/zcash-ika](https://github.com/Frontier-Compute/zcash-ika) | Split-key ZEC/BTC custody via Ika 2PC-MPC on Sui |
+| [@frontiercompute/zap1-near](https://github.com/Frontier-Compute/zap1-near) | Cross-chain ZEC via NEAR Chain Signatures and Intents |
+
 ## License
 
 MIT
