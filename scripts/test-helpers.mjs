@@ -18,6 +18,7 @@ export const EXPECTED_TOOL_NAMES = [
   "zcash_prove_payment",
   "zcash_reputation_score",
   "zcash_watch_payment",
+  "zcash_crosschain_swap",
 ].sort();
 
 export const SAMPLE_ADDRESS =
