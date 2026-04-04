@@ -13,6 +13,11 @@ export const EXPECTED_TOOL_NAMES = [
   "lookup_transaction",
   "send_shielded",
   "verify_proof",
+  "zcash_create_invoice",
+  "zcash_identity_register",
+  "zcash_prove_payment",
+  "zcash_reputation_score",
+  "zcash_watch_payment",
 ].sort();
 
 export const SAMPLE_ADDRESS =
