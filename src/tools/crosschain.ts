@@ -4,17 +4,18 @@ import { z } from "zod/v4";
 export function registerCrosschainTool(server: McpServer) {
   server.tool(
     "zcash_crosschain_swap",
-    "Express a cross-chain swap intent. Shielded ZEC to BTC, USDC, USDT, or any supported chain. " +
-      "Three custody modes: ika (split-key on Sui), near (NEAR Chain Signatures), direct (local wallet). " +
-      "Every swap attested on Zcash via ZAP1.",
+    "Cross-chain swap intent for Zcash transparent, Bitcoin, or EVM assets. " +
+      "Custody via Ika (split-key on Sui), NEAR Chain Signatures, or direct wallet. " +
+      "Zcash shielded (Orchard) requires RedPallas - not available via Ika or NEAR. " +
+      "Only transparent ZEC works through external MPC custody.",
     {
       source_chain: z
-        .enum(["zcash-shielded", "zcash-transparent", "bitcoin", "ethereum"])
-        .describe("Source chain"),
+        .enum(["zcash-transparent", "bitcoin", "ethereum"])
+        .describe("Source chain (transparent ZEC, BTC, or ETH)"),
       dest_chain: z
-        .enum(["zcash-shielded", "zcash-transparent", "bitcoin", "ethereum", "usdc", "usdt"])
+        .enum(["zcash-transparent", "bitcoin", "ethereum", "usdc", "usdt"])
         .describe("Destination chain or asset"),
-      amount: z.string().describe("Amount in source denomination (e.g. '0.01')"),
+      amount: z.string().describe("Amount in source denomination"),
       recipient: z.string().describe("Recipient address on destination chain"),
       custody: z
         .enum(["ika", "near", "direct"])
@@ -25,7 +26,6 @@ export function registerCrosschainTool(server: McpServer) {
       const provider = custody ?? "direct";
 
       const signingParams: Record<string, { curve: string; algorithm: string; hash: string }> = {
-        "zcash-shielded": { curve: "Ed25519", algorithm: "EdDSA", hash: "SHA512" },
         "zcash-transparent": { curve: "secp256k1", algorithm: "ECDSA", hash: "DoubleSHA256" },
         bitcoin: { curve: "secp256k1", algorithm: "ECDSA", hash: "DoubleSHA256" },
         ethereum: { curve: "secp256k1", algorithm: "ECDSA", hash: "KECCAK256" },
@@ -41,23 +41,18 @@ export function registerCrosschainTool(server: McpServer) {
         },
         near: {
           name: "NEAR Chain Signatures (v1.signer)",
-          security: "Threshold FROST/Cait-Sith MPC across NEAR nodes.",
+          security: "Threshold Cait-Sith MPC across NEAR nodes. secp256k1 only.",
           pkg: "@frontiercompute/zap1-near",
         },
         direct: {
           name: "Local Zebra wallet",
-          security: "Full key on machine. Use ika or near for zero-trust.",
+          security: "Full key on machine. Use ika or near for split-key custody.",
           pkg: null,
         },
       };
 
       const result = {
-        intent: {
-          from: source_chain,
-          to: dest_chain,
-          amount,
-          recipient,
-        },
+        intent: { from: source_chain, to: dest_chain, amount, recipient },
         signing: {
           source: signingParams[source_chain],
           destination: signingParams[dest_chain],
@@ -65,13 +60,11 @@ export function registerCrosschainTool(server: McpServer) {
         custody: custodyInfo[provider],
         attestation: {
           protocol: "ZAP1",
-          event_type: "CROSS_CHAIN_INTENT",
+          event_type: "AGENT_ACTION",
           api: "https://pay.frontiercompute.io/attest",
         },
-        execution_paths: {
-          ika: "Ed25519 dWallet live on Ika testnet (TX: FYcuaxBCAfuZqfBW7JEtEJME3KLBSBKLvhjLpZGSyaXb)",
-          near: "v1.signer Ed25519 FROST + secp256k1 Cait-Sith confirmed on mainnet",
-          intents: "Defuse 1Click API available. ZEC solver integration pending.",
+        limitations: {
+          shielded: "Zcash Orchard requires RedPallas on Pallas curve. Not available via Ika or NEAR MPC. Use direct wallet for shielded.",
         },
         status: "Intent recorded. Execution requires active custody + solver.",
       };
