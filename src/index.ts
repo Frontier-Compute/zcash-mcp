@@ -23,7 +23,7 @@ import { registerCrosschainTool } from "./tools/crosschain.js";
 
 const server = new McpServer({
   name: "zcash-mcp",
-  version: "0.2.0",
+  version: "1.1.0",
 });
 
 registerBalanceTool(server);

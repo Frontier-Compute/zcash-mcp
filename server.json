@@ -6,12 +6,12 @@
     "url": "https://github.com/Frontier-Compute/zcash-mcp",
     "source": "github"
   },
-  "version": "0.2.2",
+  "version": "1.1.0",
   "packages": [
     {
       "registryType": "npm",
       "identifier": "@frontiercompute/zcash-mcp",
-      "version": "0.2.2",
+      "version": "1.1.0",
       "transport": {
         "type": "stdio"
       },

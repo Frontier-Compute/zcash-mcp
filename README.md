@@ -5,13 +5,13 @@
 
 Zcash MCP server. Connects AI agents to shielded Zcash operations. First privacy chain on the MCP registry.
 
-MCP (Model Context Protocol) is the standard way for AI models to call external tools. This server exposes 17 Zcash tools that any MCP client can use - Claude Desktop, ChatGPT, OpenClaw, or anything that speaks the protocol.
+MCP (Model Context Protocol) is the standard way for AI models to call external tools. This server exposes 18 Zcash tools that any MCP client can use - Claude Desktop, ChatGPT, OpenClaw, or anything that speaks the protocol.
 
 ## Tools
 
 | Tool | What it does |
 |------|-------------|
-| `get_balance` | ZAP1 lifecycle events and anchor status for a wallet hash |
+| `get_balance` | ZAP1 attestation history and anchor status for a wallet hash |
 | `send_shielded` | Generate a zcash: payment URI (ZIP 321) |
 | `decode_memo` | Decode shielded memos - ZAP1 typed, ZIP 302, text, binary |
 | `attest_event` | Write a ZAP1 attestation to the Zcash blockchain |
@@ -28,6 +28,7 @@ MCP (Model Context Protocol) is the standard way for AI models to call external 
 | `zcash_prove_payment` | Fetch the full Merkle proof bundle for a leaf hash |
 | `zcash_identity_register` | Register an agent identity via AGENT_REGISTER attestation |
 | `zcash_reputation_score` | Fetch agent bond data and policy compliance as a reputation object |
+| `zcash_crosschain_swap` | Cross-chain swap intent: shielded ZEC to BTC, USDC, USDT via Ika or NEAR |
 
 ## Install
 
