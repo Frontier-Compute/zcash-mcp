@@ -11,7 +11,7 @@ const VERIFIER_ADDRESSES: Record<string, { address: string; rpc: string }> = {
     rpc: "https://mainnet.base.org",
   },
   arbitrum: {
-    address: "", // deployed in Track 2
+    address: "0x9D0B26010C9a7a2a8509Fd1a3407B741d9C10e3a",
     rpc: "https://arb1.arbitrum.io/rpc",
   },
 };
