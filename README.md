@@ -2,6 +2,8 @@
 
 [![npm](https://img.shields.io/npm/v/@frontiercompute/zcash-mcp)](https://www.npmjs.com/package/@frontiercompute/zcash-mcp)
 [![MCP Registry](https://img.shields.io/badge/MCP_Registry-published-green)](https://registry.modelcontextprotocol.io/)
+![downloads](https://img.shields.io/npm/dw/@frontiercompute/zcash-mcp)
+![license](https://img.shields.io/npm/l/@frontiercompute/zcash-mcp)
 
 Zcash MCP server. Connects AI agents to shielded Zcash operations. First privacy chain on the MCP registry.
 
@@ -119,12 +121,14 @@ GitHub Actions mirrors that split:
 - The ZAP1 API at pay.frontiercompute.io for attestation tools (get_balance, attest_event, verify_proof, get_stats, get_anchor_history, get_anchor_status, get_events, get_agent_status)
 - Memo decoding works locally with no external dependencies
 
-## Related packages
+## Related Packages
 
 | Package | What it does |
 |---------|-------------|
-| [@frontiercompute/zcash-ika](https://github.com/Frontier-Compute/zcash-ika) | Split-key ZEC/BTC custody via Ika 2PC-MPC on Sui |
-| [@frontiercompute/zap1-near](https://github.com/Frontier-Compute/zap1-near) | Cross-chain ZEC via NEAR Chain Signatures and Intents |
+| [@frontiercompute/zcash-ika](https://www.npmjs.com/package/@frontiercompute/zcash-ika) | Zcash + Bitcoin signing via Ika 2PC-MPC |
+| [@frontiercompute/openclaw-zap1](https://www.npmjs.com/package/@frontiercompute/openclaw-zap1) | OpenClaw skill for ZAP1 attestation |
+| [@frontiercompute/zap1](https://www.npmjs.com/package/@frontiercompute/zap1) | ZAP1 attestation client |
+| [@frontiercompute/silo-zap1](https://www.npmjs.com/package/@frontiercompute/silo-zap1) | Silo agent attestation via ZAP1 |
 
 ## License
 
