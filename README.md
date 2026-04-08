@@ -130,6 +130,12 @@ GitHub Actions mirrors that split:
 | [@frontiercompute/zap1](https://www.npmjs.com/package/@frontiercompute/zap1) | ZAP1 attestation client |
 | [@frontiercompute/silo-zap1](https://www.npmjs.com/package/@frontiercompute/silo-zap1) | Silo agent attestation via ZAP1 |
 
+## Links
+
+- [Dashboard](https://frontiercompute.cash/dashboard.html) - live ZAP1 attestation dashboard
+- [MCP Registry](https://registry.modelcontextprotocol.io/) - published MCP server listing
+- [Frontier Compute](https://frontiercompute.cash) - project homepage
+
 ## License
 
 MIT
