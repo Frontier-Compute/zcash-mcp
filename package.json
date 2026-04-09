@@ -1,6 +1,6 @@
 {
   "name": "@frontiercompute/zcash-mcp",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "Zcash MCP server - shielded operations for AI agents",
   "type": "module",
   "main": "dist/index.js",
