@@ -139,3 +139,29 @@ GitHub Actions mirrors that split:
 ## License
 
 MIT
+
+## quickstart (5 minutes)
+
+add to your MCP config:
+
+```json
+{
+  "mcpServers": {
+    "zcash": {
+      "command": "npx",
+      "args": ["@frontiercompute/zcash-mcp"]
+    }
+  }
+}
+```
+
+restart your client.  ask: "what is the current zcash block height?"
+
+done.  22 tools available.  no API key needed for read operations.
+
+get a trial key for write operations:
+
+```
+curl -s -X POST https://frontiercompute.cash/api/trial-key
+```
+
