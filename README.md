@@ -157,7 +157,7 @@ add to your MCP config:
 
 restart your client.  ask: "what is the current zcash block height?"
 
-done.  22 tools available.  no API key needed for read operations.
+done.  12 tools available.  no API key needed for read operations.
 
 get a trial key for write operations:
 
