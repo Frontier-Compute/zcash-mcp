@@ -16,7 +16,10 @@ export function registerBalanceTool(server: McpServer) {
         const safeHash = encodeURIComponent(wallet_hash);
         const res = await fetch(`${ZAP1_API}/lifecycle/${safeHash}`, { signal: AbortSignal.timeout(API_TIMEOUT_MS) });
         if (!res.ok) throw new Error(`${res.status}: ${await res.text()}`);
-        const data = await res.json();
+        // Size-capped response: prevents OOM from large histories or malicious ZAP1_API_URL
+        const text = await res.text();
+        if (text.length > 1_048_576) throw new Error(`lifecycle response too large: ${text.length} bytes`);
+        const data = JSON.parse(text);
         return {
           content: [
             {
