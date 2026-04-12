@@ -4,6 +4,7 @@
 [![MCP Registry](https://img.shields.io/badge/MCP_Registry-published-green)](https://registry.modelcontextprotocol.io/)
 ![downloads](https://img.shields.io/npm/dw/@frontiercompute/zcash-mcp)
 ![license](https://img.shields.io/npm/l/@frontiercompute/zcash-mcp)
+[![SafeSkill 94/100](https://img.shields.io/badge/SafeSkill-94%2F100_Verified%20Safe-brightgreen)](https://safeskill.dev/scan/frontier-compute-zcash-mcp)
 
 Zcash MCP server. Connects AI agents to shielded Zcash operations. Published on the MCP registry.
 
