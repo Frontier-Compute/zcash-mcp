@@ -4,9 +4,7 @@ import { z } from "zod/v4";
 export function registerShieldTool(server: McpServer) {
   server.tool(
     "zcash_shield",
-    "Move ZEC from transparent (MPC custody) to shielded Orchard pool (local custody). " +
-      "The transparent side is signed via Ika MPC. The shielded side uses the local Orchard wallet. " +
-      "Every custody transition is attested to ZAP1.",
+    "Return a shield-to-Orchard transition plan with ZAP1 attestation metadata. This server does not build, sign, or broadcast the spend.",
     {
       wallet_id: z.string().describe("dWallet object ID (transparent side)"),
       encryption_seed: z.string().describe("Hex encryption seed from wallet creation"),

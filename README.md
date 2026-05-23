@@ -7,6 +7,8 @@
 
 ZAP1 attestation and proof-verification MCP for Zcash agents.
 
+Frontier Compute builds the proof layer for private Zcash workflows.
+
 MCP is the standard way for AI agents to call external tools. `zcash-mcp`
 exposes the ZAP1 attestation layer for agents that need verifiable receipts
 around Zcash workflows: write ZAP1 attestations to Zcash memos, query
@@ -19,7 +21,16 @@ scope.
 
 ## Why ZAP1
 
-Wallet MCPs can move value. ZAP1 proves the workflow around the value.
+Wallet MCPs can move value. ZAP1 proves the workflow around the value, and the
+counterparty can verify the proof without trusting Frontier.
+
+ZAP1 is the proof rail for Zcash agent workflows:
+
+1. `attest`: create a typed event leaf.
+2. `anchor`: commit leaves into a Merkle root anchored to Zcash.
+3. `prove`: return a receipt packet for a leaf.
+4. `verify`: let another party check the receipt without trusting the original
+   agent.
 
 Agent systems need more than a payment or a transaction lookup. They need a
 receipt that another agent, user, auditor, or service can verify later:
@@ -34,6 +45,9 @@ receipt that another agent, user, auditor, or service can verify later:
 That is the lane for this server. It gives Zcash agents a receipt layer that can
 sit beside any wallet, signer, custody system, lightwalletd stack, Zaino stack,
 or application-specific payment flow.
+
+See [ZAP1 Proof Rail](docs/zap1-proof-rail.md) for the category boundary,
+receipt model, integration pattern, and red-team rejects.
 
 ## Capability Boundary
 
@@ -123,12 +137,12 @@ Red-team rejects:
 | `zcash_watch_payment` | Poll an invoice until paid or timeout |
 | `get_block_height` | Current chain height from Zebra |
 | `lookup_transaction` | Raw transaction data by txid |
-| `get_balance` | ZAP1 lifecycle and anchor status for a wallet hash or agent ID |
-| `send_shielded` | Generate a ZIP 321 `zcash:` payment URI |
-| `zcash_crosschain_swap` | Generate a cross-chain swap intent with ZAP1 attestation metadata |
-| `zcash_create_wallet` | Return split-key wallet creation instructions for external Ika tooling |
-| `zcash_sign_mpc` | Return MPC signing instructions for external Ika tooling |
-| `zcash_shield` | Return a shield-to-Orchard transition plan with ZAP1 attestation metadata |
+| `get_balance` | Compatibility name for ZAP1 lifecycle and anchor status lookup by wallet hash or agent ID. It does not scan wallet balances |
+| `send_shielded` | Generate a ZIP 321 `zcash:` payment URI for an external wallet. It does not sign or broadcast a transaction |
+| `zcash_crosschain_swap` | Generate a cross-chain intent with ZAP1 attestation metadata. Execution requires an external custody and solver layer |
+| `zcash_create_wallet` | Return split-key wallet creation instructions for external Ika tooling. This server does not create or hold the key |
+| `zcash_sign_mpc` | Return MPC signing instructions for external Ika tooling. This server does not sign |
+| `zcash_shield` | Return a shield-to-Orchard transition plan with ZAP1 attestation metadata. This server does not build or broadcast the spend |
 | `zcash_verify_evm` | Verify a ZAP1 Merkle proof on-chain via EVM contract |
 
 ## Install

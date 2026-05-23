@@ -7,7 +7,7 @@ export function registerCrosschainTool(server: McpServer) {
     "Cross-chain swap intent for Zcash transparent, Bitcoin, or EVM assets. " +
       "Custody via Ika (split-key on Sui), NEAR Chain Signatures, or direct wallet. " +
       "Zcash shielded (Orchard) requires RedPallas - not available via Ika or NEAR. " +
-      "Only transparent ZEC works through external MPC custody.",
+      "Only transparent ZEC works through external MPC custody. This tool creates an intent, not an executed swap.",
     {
       source_chain: z
         .enum(["zcash-transparent", "bitcoin", "ethereum"])
@@ -66,7 +66,7 @@ export function registerCrosschainTool(server: McpServer) {
         limitations: {
           shielded: "Zcash Orchard requires RedPallas on Pallas curve. Not available via Ika or NEAR MPC. Use direct wallet for shielded.",
         },
-        status: "Intent recorded. Execution requires active custody + solver.",
+        status: "Intent recorded. Execution requires an external custody and solver layer.",
       };
 
       return {

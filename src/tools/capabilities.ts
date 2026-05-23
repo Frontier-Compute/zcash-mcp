@@ -4,6 +4,8 @@ const CAPABILITY_MANIFEST = {
   name: "zcash-mcp",
   layer: "ZAP1 attestation and proof verification",
   posture: "attestation_layer_not_wallet",
+  category_claim: "ZAP1 is the proof rail for Zcash agent workflows.",
+  proof_rail_verbs: ["attest", "anchor", "prove", "verify"],
   primary_use_cases: [
     "create ZAP1 attestations for agent and workflow events",
     "query ZAP1 attestation, anchor, event, and agent state",
@@ -16,6 +18,17 @@ const CAPABILITY_MANIFEST = {
     zap1_role: "ZAP1 records typed workflow events, commits them into a Merkle tree, and anchors roots to Zcash.",
     composition: "Use wallet-layer tools for balance, signing, sync, and spend construction. Use this server for attestations, proof packets, and verification.",
     durable_value: "A receiver can verify the receipt without trusting the original agent process.",
+  },
+  proof_rail_boundary: {
+    owns: "receipts, anchor proofs, Merkle inclusion, memo decoding, and verification context",
+    composes_with: "wallets, signers, custody systems, lightwalletd stacks, Zaino stacks, and application workflows",
+    rejects: [
+      "payment URI as proof of payment",
+      "pending leaf as anchored finality",
+      "custody or seed handling",
+      "transaction signing or broadcast",
+      "wallet scan state as ZAP1 truth",
+    ],
   },
   receipt_packet: [
     "event_type",

@@ -4,8 +4,7 @@ import { z } from "zod/v4";
 export function registerCreateWalletTool(server: McpServer) {
   server.tool(
     "zcash_create_wallet",
-    "Create a split-key wallet via Ika 2PC-MPC. One secp256k1 key signs for Zcash transparent, Bitcoin, and Ethereum. " +
-      "Neither party holds the full private key. Returns wallet ID, public key, and encryption seed (save it for signing).",
+    "Return split-key wallet creation instructions for external Ika 2PC-MPC tooling. This server does not create, store, or hold the key.",
     {
       network: z
         .enum(["testnet", "mainnet"])

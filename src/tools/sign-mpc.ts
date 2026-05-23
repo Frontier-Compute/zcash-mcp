@@ -4,8 +4,7 @@ import { z } from "zod/v4";
 export function registerSignMpcTool(server: McpServer) {
   server.tool(
     "zcash_sign_mpc",
-    "Sign a message hash through Ika 2PC-MPC. Two on-chain transactions: presign + sign. " +
-      "Neither party sees the full private key. Returns DER-encoded ECDSA signature.",
+    "Return MPC signing instructions for external Ika 2PC-MPC tooling. This server does not sign and never sees a full private key.",
     {
       wallet_id: z.string().describe("dWallet object ID from create_wallet"),
       message_hash: z.string().describe("Hex-encoded 32-byte message hash (sighash) to sign"),

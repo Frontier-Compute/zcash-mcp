@@ -4,7 +4,7 @@ import { z } from "zod/v4";
 export function registerSendTool(server: McpServer) {
   server.tool(
     "send_shielded",
-    "Generate a zcash: payment URI for shielded ZEC. Encodes address, amount, and optional memo into a scannable URI.",
+    "Generate a ZIP 321 zcash: payment URI for an external wallet. This tool does not sign, scan, or broadcast.",
     {
       address: z.string().regex(/^(u1|zs1|t1|t3)[a-zA-Z0-9]+$/, "Invalid Zcash address format").describe("Recipient Zcash shielded address"),
       amount: z.number().positive().max(21_000_000).describe("Amount in ZEC"),
@@ -37,7 +37,7 @@ export function registerSendTool(server: McpServer) {
                   address,
                   amount,
                   memo: memo ?? null,
-                  note: "Scan this URI with any Zcash wallet to send the payment",
+                  note: "Use an external Zcash wallet to review, sign, and send this payment URI. This server does not sign or broadcast.",
                 },
                 null,
                 2
