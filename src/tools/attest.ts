@@ -6,7 +6,7 @@ const ZAP1_API = process.env.ZAP1_API_URL ?? "https://api.frontiercompute.cash";
 export function registerAttestTool(server: McpServer) {
   server.tool(
     "attest_event",
-    "Create a ZAP1 attestation event on Zcash. Writes a typed lifecycle, governance, or agent event to the Merkle tree. Returns leaf hash for verification.",
+    "Create a typed ZAP1 attestation event leaf for later anchoring. Returns a leaf hash for verification.",
     {
       event_type: z.string().max(64).describe("Event type: DEPLOYMENT, CONTRACT_ANCHOR, AGENT_ACTION, GOVERNANCE_PROPOSAL, etc."),
       wallet_hash: z.string().max(128).describe("Wallet hash or agent identifier"),

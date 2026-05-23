@@ -18,8 +18,8 @@ hashes, anchors, and independent verification.
 
 MCP is the standard way for AI agents to call external tools. `zcash-mcp`
 exposes the ZAP1 attestation layer for agents that need verifiable receipts
-around Zcash workflows: write ZAP1 attestations to Zcash memos, query
-attestation state, and verify proof receipts.
+around Zcash workflows: create ZAP1 attestation leaves, query anchor state,
+and verify proof receipts.
 
 This is not a full wallet MCP. Balance scanning, private key custody, seed
 handling, PCZT signing, shielded spend construction, and lightwalletd or Zaino
@@ -132,7 +132,7 @@ Red-team rejects:
 | `zcash_capability_manifest` | Machine-readable scope map for agent use: covered surfaces, excluded wallet functions, and composition rules |
 | `zcash_conformance_check` | Validate a ZAP1 receipt packet against the frozen v1 receipt contract |
 | `zcash_receipt_template` | Customer-ready receipt workflow for agent actions, payment receipts, operator lifecycle events, and policy attestations |
-| `attest_event` | Write a ZAP1 attestation to the Zcash blockchain |
+| `attest_event` | Create a typed ZAP1 attestation leaf for later anchoring |
 | `verify_proof` | Verify a ZAP1 Merkle proof |
 | `zcash_prove_payment` | Fetch the full Merkle proof bundle for a leaf hash |
 | `get_anchor_history` | All ZAP1 Merkle root anchors with txids and block heights |
