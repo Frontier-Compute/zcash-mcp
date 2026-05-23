@@ -5,7 +5,7 @@
   "type": "module",
   "main": "dist/index.js",
   "bin": {
-    "zcash-mcp": "./dist/index.js"
+    "zcash-mcp": "dist/index.js"
   },
   "scripts": {
     "build": "tsc",
@@ -42,7 +42,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Frontier-Compute/zcash-mcp.git"
+    "url": "git+https://github.com/Frontier-Compute/zcash-mcp.git"
   },
   "mcpName": "io.github.Zk-nd3r/zcash-mcp"
 }
