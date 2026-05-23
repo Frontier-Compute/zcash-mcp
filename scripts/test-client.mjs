@@ -50,7 +50,7 @@ export async function runMcpSmokeTest(serverEntry, { cwd, label }) {
     stage = "list tools";
     const tools = await client.listTools();
     assertToolRegistration(tools.tools);
-    assert.equal(tools.tools.length, 23, `${label}: tool count drifted`);
+    assert.equal(tools.tools.length, 24, `${label}: tool count drifted`);
 
     stage = "capability manifest";
     const capabilityResult = await client.callTool({
@@ -61,6 +61,19 @@ export async function runMcpSmokeTest(serverEntry, { cwd, label }) {
     const manifest = parseJsonTextResult(capabilityResult);
     assert.equal(manifest.posture, "attestation_layer_not_wallet", `${label}: bad capability posture`);
     assert(manifest.wallet_boundary.out_of_scope.includes("PCZT signing"), `${label}: missing wallet boundary`);
+
+    stage = "receipt template";
+    const receiptTemplateResult = await client.callTool({
+      name: "zcash_receipt_template",
+      arguments: { use_case: "payment_receipt" },
+    });
+    assert(!receiptTemplateResult.isError, `${label}: zcash_receipt_template returned an error`);
+    const receiptTemplate = parseJsonTextResult(receiptTemplateResult);
+    assert.equal(receiptTemplate.event_template.event_type, "PAYMENT_RECEIPT", `${label}: bad receipt use case`);
+    assert(
+      receiptTemplate.acceptance_checks.includes("the verifier can repeat verification without trusting the original agent"),
+      `${label}: missing customer verification check`
+    );
 
     stage = "ping";
     await client.ping();

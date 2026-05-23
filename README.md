@@ -63,11 +63,51 @@ Poor fits:
 - broadcasting shielded spends
 - replacing a wallet SDK
 
+## Customer Flow
+
+Use `zcash_receipt_template` first when you are wiring ZAP1 into a product. It
+returns a customer-ready workflow for the receipt type you want:
+
+- `agent_action`: prove an agent performed a named action with specific input
+  and output hashes
+- `payment_receipt`: bind invoice or payment metadata to a ZAP1 leaf and later
+  prove inclusion under an anchored root
+- `operator_lifecycle`: record deployment, upgrade, incident, recovery, or
+  policy state as a verifiable lifecycle event
+- `policy_attestation`: record an agent, service, or workflow policy decision
+  as a verifiable event
+
+Expected flow:
+
+1. Call `zcash_capability_manifest` to confirm the attestation boundary.
+2. Call `zcash_receipt_template` for the use case.
+3. Call `attest_event` to create the typed ZAP1 leaf.
+4. Call `get_anchor_status` to check whether the leaf is anchored or waiting.
+5. Call `verify_proof` to verify tree inclusion.
+6. Call `zcash_prove_payment` to fetch a handoff proof bundle.
+
+Acceptance checks:
+
+- the receipt has a leaf hash
+- the leaf verifies under a returned Merkle root
+- anchored receipts include an anchor transaction or anchor height
+- another verifier can repeat verification without trusting the original agent
+- no private keys, seeds, PCZTs, or wallet scan state were sent to this server
+
+Red-team rejects:
+
+- treating a payment URI as proof of payment
+- treating an unanchored leaf as final settlement evidence
+- asking this server to sign, scan balances, recover seeds, or hold keys
+- mixing custody claims into ZAP1 receipt claims
+- hiding the distinction between wallet action and receipt verification
+
 ## Tools
 
 | Tool | What it does |
 |------|-------------|
 | `zcash_capability_manifest` | Machine-readable scope map for agent use: owned surfaces, excluded wallet functions, and composition rules |
+| `zcash_receipt_template` | Customer-ready receipt workflow for agent actions, payment receipts, operator lifecycle events, and policy attestations |
 | `attest_event` | Write a ZAP1 attestation to the Zcash blockchain |
 | `verify_proof` | Verify a ZAP1 Merkle proof |
 | `zcash_prove_payment` | Fetch the full Merkle proof bundle for a leaf hash |
