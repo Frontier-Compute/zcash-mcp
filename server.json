@@ -1,17 +1,17 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.Zk-nd3r/zcash-mcp",
-  "description": "ZAP1 attestation and proof-verification MCP for Zcash agents. Attestation layer, not a wallet.",
+  "description": "ZAP1 attestation and proof-verification MCP for Zcash agents. Reference ZAP1 implementation, not a wallet.",
   "repository": {
     "url": "https://github.com/Frontier-Compute/zcash-mcp",
     "source": "github"
   },
-  "version": "1.2.6",
+  "version": "1.2.7",
   "packages": [
     {
       "registryType": "npm",
       "identifier": "@frontiercompute/zcash-mcp",
-      "version": "1.2.6",
+      "version": "1.2.7",
       "transport": {
         "type": "stdio"
       },

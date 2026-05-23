@@ -7,7 +7,14 @@
 
 ZAP1 attestation and proof-verification MCP for Zcash agents.
 
-Frontier Compute builds the proof layer for private Zcash workflows.
+ZAP1 is an attestation and proof rail for Zcash workflows. Frontier Compute
+maintains the reference ZAP1 implementation.
+
+Core rule: observe state, bound the claim, hash evidence, issue a receipt,
+verify later.
+
+ZAP1 coule de source: receipt truth flows from observed state, bounded claims,
+hashes, anchors, and independent verification.
 
 MCP is the standard way for AI agents to call external tools. `zcash-mcp`
 exposes the ZAP1 attestation layer for agents that need verifiable receipts
@@ -47,15 +54,17 @@ sit beside any wallet, signer, custody system, lightwalletd stack, Zaino stack,
 or application-specific payment flow.
 
 See [ZAP1 Proof Rail](docs/zap1-proof-rail.md) for the category boundary,
-receipt model, integration pattern, and red-team rejects.
+receipt model, integration pattern, and red-team rejects. See
+[ZAP1 Conformance](docs/zap1-conformance.md) for the receipt contract agents
+and integrations should satisfy.
 
 ## Capability Boundary
 
 The `zcash_capability_manifest` tool gives agents a machine-readable scope map:
 
-- owned here: ZAP1 receipts, lifecycle attestations, proof verification, anchor
+- covered here: ZAP1 receipts, lifecycle attestations, proof verification, anchor
   state, memo decoding, and public chain context
-- not owned here: custody, seed handling, balance scanning, PCZT signing,
+- excluded here: custody, seed handling, balance scanning, PCZT signing,
   shielded spend construction, and wallet-server synchronization
 - composition rule: use this server before or after wallet-layer actions to
   create, query, and verify receipts
@@ -120,7 +129,8 @@ Red-team rejects:
 
 | Tool | What it does |
 |------|-------------|
-| `zcash_capability_manifest` | Machine-readable scope map for agent use: owned surfaces, excluded wallet functions, and composition rules |
+| `zcash_capability_manifest` | Machine-readable scope map for agent use: covered surfaces, excluded wallet functions, and composition rules |
+| `zcash_conformance_check` | Validate a ZAP1 receipt packet against the frozen v1 receipt contract |
 | `zcash_receipt_template` | Customer-ready receipt workflow for agent actions, payment receipts, operator lifecycle events, and policy attestations |
 | `attest_event` | Write a ZAP1 attestation to the Zcash blockchain |
 | `verify_proof` | Verify a ZAP1 Merkle proof |

@@ -1,0 +1,15 @@
+{
+  "schema_version": "zap1-receipt-v1",
+  "event_type": "OPERATOR_EVENT",
+  "subject_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "claim_hash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "evidence_hash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "leaf_hash": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+  "merkle_root": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+  "merkle_path": [
+    "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+  ],
+  "anchor_txid": "1111111111111111111111111111111111111111111111111111111111111111",
+  "anchor_height": 3349505,
+  "verification_url": "https://api.frontiercompute.cash/verify/dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+}

@@ -4,7 +4,9 @@ const CAPABILITY_MANIFEST = {
   name: "zcash-mcp",
   layer: "ZAP1 attestation and proof verification",
   posture: "attestation_layer_not_wallet",
-  category_claim: "ZAP1 is the proof rail for Zcash agent workflows.",
+  category_claim: "ZAP1 is an attestation and proof rail for Zcash workflows. Frontier Compute maintains the reference ZAP1 implementation.",
+  operating_rule: "Observe state, bound the claim, hash evidence, issue a receipt, verify later.",
+  motto: "ZAP1 coule de source: receipt truth flows from observed state, bounded claims, hashes, anchors, and independent verification.",
   proof_rail_verbs: ["attest", "anchor", "prove", "verify"],
   primary_use_cases: [
     "create ZAP1 attestations for agent and workflow events",
@@ -20,7 +22,7 @@ const CAPABILITY_MANIFEST = {
     durable_value: "A receiver can verify the receipt without trusting the original agent process.",
   },
   proof_rail_boundary: {
-    owns: "receipts, anchor proofs, Merkle inclusion, memo decoding, and verification context",
+    covers: "receipts, anchor proofs, Merkle inclusion, memo decoding, and verification context",
     composes_with: "wallets, signers, custody systems, lightwalletd stacks, Zaino stacks, and application workflows",
     rejects: [
       "payment URI as proof of payment",
@@ -93,7 +95,7 @@ const CAPABILITY_MANIFEST = {
 export function registerCapabilityTool(server: McpServer) {
   server.tool(
     "zcash_capability_manifest",
-    "Return the ZAP1 capability manifest: what this MCP owns, what it deliberately does not own, and how agents should compose it with wallet-layer tools.",
+    "Return the ZAP1 capability manifest: what this MCP covers, what it deliberately excludes, and how agents should compose it with wallet-layer tools.",
     {},
     async () => ({
       content: [

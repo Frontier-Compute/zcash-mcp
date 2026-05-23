@@ -1,8 +1,13 @@
 # ZAP1 Proof Rail
 
-Frontier Compute builds the proof layer for private Zcash workflows.
+ZAP1 is an attestation and proof rail for Zcash workflows. Frontier Compute
+maintains the reference ZAP1 implementation.
 
-ZAP1 is the attestation and proof rail for those workflows.
+Core rule: observe state, bound the claim, hash evidence, issue a receipt,
+verify later.
+
+ZAP1 coule de source: receipt truth flows from observed state, bounded claims,
+hashes, anchors, and independent verification.
 
 Wallets move value. ZAP1 proves the workflow around the value, and the
 counterparty can verify the proof without trusting Frontier.
@@ -14,9 +19,9 @@ The core surface is four verbs:
 3. `prove`: return the receipt packet for a leaf, including the Merkle path and anchor context.
 4. `verify`: let another agent, user, service, or auditor check the receipt without trusting the original runtime.
 
-## What ZAP1 Owns
+## What ZAP1 Covers
 
-ZAP1 owns receipts, not custody.
+ZAP1 covers receipts, not custody.
 
 The protocol is designed for workflows where the important question is not just
 "did a transaction exist" but "what claim was made, by which workflow, under
@@ -51,10 +56,13 @@ proof check.
 Minimum fields:
 
 - `event_type`
-- `agent_or_wallet_hash`
+- `subject_hash`
+- `claim_hash`
+- `evidence_hash`
 - `leaf_hash`
 - `merkle_root`
 - `merkle_path`
+- `schema_version`
 - `anchor_txid`, when anchored
 - `anchor_height`, when known
 - `verification_url`, when available
@@ -89,7 +97,8 @@ This keeps the category clear:
 
 ## Product Position
 
-`@frontiercompute/zcash-mcp` is the reference MCP surface for ZAP1.
+`@frontiercompute/zcash-mcp` is the reference ZAP1 implementation for MCP
+agents.
 
 It gives agents a narrow, verifiable proof layer that can compose with any
 wallet, signer, custody system, lightwalletd stack, Zaino stack, or application
@@ -100,7 +109,7 @@ wallet.
 
 Public claim:
 
-> Wallets move value. Frontier proves the workflow around the value, and you can verify the proof yourself on Zcash.
+> Wallets move value. ZAP1 proves the workflow around the value, and you can verify the proof yourself on Zcash.
 
 ## Red Team Rejects
 

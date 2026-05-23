@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Frontier-Compute/zcash-mcp/schemas/zap1-receipt-v1.schema.json",
+  "title": "ZAP1 Receipt v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "event_type",
+    "subject_hash",
+    "claim_hash",
+    "evidence_hash",
+    "leaf_hash",
+    "merkle_root",
+    "merkle_path"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "zap1-receipt-v1"
+    },
+    "event_type": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64
+    },
+    "subject_hash": {
+      "$ref": "#/$defs/hex64"
+    },
+    "claim_hash": {
+      "$ref": "#/$defs/hex64"
+    },
+    "evidence_hash": {
+      "$ref": "#/$defs/hex64"
+    },
+    "leaf_hash": {
+      "$ref": "#/$defs/hex64"
+    },
+    "merkle_root": {
+      "$ref": "#/$defs/hex64"
+    },
+    "merkle_path": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/hex64"
+      }
+    },
+    "anchor_txid": {
+      "$ref": "#/$defs/hex64"
+    },
+    "anchor_height": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "verification_url": {
+      "type": "string",
+      "format": "uri"
+    }
+  },
+  "$defs": {
+    "hex64": {
+      "type": "string",
+      "pattern": "^[0-9a-fA-F]{64}$"
+    }
+  }
+}

@@ -50,7 +50,7 @@ export async function runMcpSmokeTest(serverEntry, { cwd, label }) {
     stage = "list tools";
     const tools = await client.listTools();
     assertToolRegistration(tools.tools);
-    assert.equal(tools.tools.length, 24, `${label}: tool count drifted`);
+    assert.equal(tools.tools.length, 25, `${label}: tool count drifted`);
 
     stage = "capability manifest";
     const capabilityResult = await client.callTool({
@@ -74,6 +74,30 @@ export async function runMcpSmokeTest(serverEntry, { cwd, label }) {
       receiptTemplate.acceptance_checks.includes("the verifier can repeat verification without trusting the original agent"),
       `${label}: missing customer verification check`
     );
+
+    stage = "conformance check";
+    const conformanceResult = await client.callTool({
+      name: "zcash_conformance_check",
+      arguments: {
+        receipt: {
+          schema_version: "zap1-receipt-v1",
+          event_type: "OPERATOR_EVENT",
+          subject_hash: "a".repeat(64),
+          claim_hash: "b".repeat(64),
+          evidence_hash: "c".repeat(64),
+          leaf_hash: "d".repeat(64),
+          merkle_root: "e".repeat(64),
+          merkle_path: ["f".repeat(64)],
+          anchor_txid: "1".repeat(64),
+          anchor_height: 123,
+          verification_url: "https://api.frontiercompute.cash/verify/" + "d".repeat(64),
+        },
+      },
+    });
+    assert(!conformanceResult.isError, `${label}: zcash_conformance_check returned an error`);
+    const conformance = parseJsonTextResult(conformanceResult);
+    assert.equal(conformance.valid, true, `${label}: sample receipt did not validate`);
+    assert.equal(conformance.status, "anchored", `${label}: sample receipt should be anchored`);
 
     stage = "ping";
     await client.ping();

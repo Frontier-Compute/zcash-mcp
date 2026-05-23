@@ -1,6 +1,6 @@
 {
   "name": "@frontiercompute/zcash-mcp",
-  "version": "1.2.6",
+  "version": "1.2.7",
   "description": "ZAP1 attestation and proof-verification MCP for Zcash agents",
   "type": "module",
   "main": "dist/index.js",
@@ -12,7 +12,9 @@
     "prepack": "npm run build",
     "start": "node dist/index.js",
     "dev": "tsc --watch",
-    "test:offline": "npm run build && node scripts/test-stdio.mjs && node scripts/test-packed-install.mjs",
+    "check:positioning": "node scripts/check-positioning.mjs",
+    "check:receipts": "node scripts/verify-receipt.mjs examples/operator-lifecycle-receipt.json && node scripts/verify-receipt.mjs examples/payment-receipt.json",
+    "test:offline": "npm run check:positioning && npm run check:receipts && npm run build && node scripts/test-stdio.mjs && node scripts/test-packed-install.mjs",
     "test:live": "npm run build && node test/e2e.mjs"
   },
   "dependencies": {
@@ -26,6 +28,8 @@
   "files": [
     "dist/",
     "docs/",
+    "schemas/",
+    "examples/",
     ".well-known/",
     "LICENSE",
     "README.md"
