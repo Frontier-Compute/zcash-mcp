@@ -188,7 +188,7 @@ do not need an API key.
 Get a trial key for write operations:
 
 ```bash
-curl -s -X POST https://frontiercompute.cash/api/trial-key
+curl -s -X POST https://api.frontiercompute.cash/trial-key
 ```
 
 ## Configuration
@@ -198,7 +198,7 @@ Environment variables:
 | Variable | Default | Description |
 |----------|---------|-------------|
 | `ZEBRA_RPC_URL` | `http://127.0.0.1:8232` | Zebra node JSON-RPC endpoint |
-| `ZAP1_API_URL` | `https://pay.frontiercompute.io` | ZAP1 attestation API |
+| `ZAP1_API_URL` | `https://api.frontiercompute.cash` | ZAP1 attestation API |
 | `ZAP1_API_KEY` | none | API key for write operations |
 
 ### Claude Desktop

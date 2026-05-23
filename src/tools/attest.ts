@@ -1,7 +1,7 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod/v4";
 
-const ZAP1_API = process.env.ZAP1_API_URL ?? "https://pay.frontiercompute.io";
+const ZAP1_API = process.env.ZAP1_API_URL ?? "https://api.frontiercompute.cash";
 
 export function registerAttestTool(server: McpServer) {
   server.tool(

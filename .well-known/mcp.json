@@ -1,7 +1,7 @@
 {
   "name": "@frontiercompute/zcash-mcp",
   "description": "ZAP1 attestation and proof-verification MCP for Zcash agents. Attestation layer, not a wallet.",
-  "version": "1.2.7",
+  "version": "1.2.8",
   "transport": "stdio",
   "tools": [
     "get_balance",

@@ -61,7 +61,7 @@ export function registerCrosschainTool(server: McpServer) {
         attestation: {
           protocol: "ZAP1",
           event_type: "AGENT_ACTION",
-          api: "https://pay.frontiercompute.io/attest",
+          api: "https://api.frontiercompute.cash/attest",
         },
         limitations: {
           shielded: "Zcash Orchard requires RedPallas on Pallas curve. Not available via Ika or NEAR MPC. Use direct wallet for shielded.",

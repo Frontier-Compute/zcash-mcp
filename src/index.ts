@@ -30,7 +30,7 @@ import { registerConformanceTool } from "./tools/conformance.js";
 
 const server = new McpServer({
   name: "zcash-mcp",
-  version: "1.2.7",
+  version: "1.2.8",
 });
 
 registerBalanceTool(server);
