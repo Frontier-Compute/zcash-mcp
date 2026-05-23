@@ -9,7 +9,7 @@ import { fileURLToPath } from "node:url";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
 
-import { SAMPLE_ADDRESS, parseJsonTextResult } from "../scripts/test-helpers.mjs";
+import { parseJsonTextResult } from "../scripts/test-helpers.mjs";
 
 const ZEBRA_RPC_URL = process.env.ZEBRA_RPC_URL || "http://127.0.0.1:8232";
 const ZAP1_API_URL = process.env.ZAP1_API_URL || "http://127.0.0.1:3080";
@@ -126,13 +126,6 @@ async function main() {
       console.log(`    leaf ${eventLeafHash.slice(0, 16)}... valid=${result.valid}`);
     });
 
-    await test("get_balance", async () => {
-      const result = await callJson("get_balance", { wallet_hash: eventWalletHash });
-      const serialized = JSON.stringify(result);
-      assert(serialized.includes(eventWalletHash), "wallet hash not reflected in lifecycle payload");
-      console.log(`    lifecycle for ${eventWalletHash.slice(0, 16)}...`);
-    });
-
     await test("attest_event", async () => {
       if (!ZAP1_API_KEY) {
         console.log("    SKIP (no API key)");
@@ -158,18 +151,6 @@ async function main() {
       assert.equal(result.format, "text", "expected plain text memo");
       assert.equal(result.text, "hello world", "unexpected decoded memo");
       console.log(`    decoded: ${result.format}`);
-    });
-
-    await test("send_shielded", async () => {
-      const result = await callJson("send_shielded", {
-        address: SAMPLE_ADDRESS,
-        amount: 0.001,
-        memo: "test",
-        label: "zcash mcp",
-      });
-      assert.match(result.uri, /^zcash:/, "bad URI prefix");
-      assert.match(result.uri, /amount=0\.001/, "missing amount");
-      console.log(`    URI: ${result.uri.slice(0, 60)}...`);
     });
 
     await test("get_anchor_status", async () => {

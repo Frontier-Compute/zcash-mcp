@@ -24,7 +24,7 @@ const VERIFIER_ABI = [
 
 export function registerVerifyEvmTool(server: McpServer) {
   server.tool(
-    "zcash_verify_evm",
+    "zap1_verify_evm",
     "Verify a ZAP1 Merkle proof on-chain via the EVM ZAP1Verifier contract. " +
       "Checks that a leaf hash is included in a registered Zcash anchor root. " +
       "Supports Sepolia (testnet), Base, and Arbitrum.",

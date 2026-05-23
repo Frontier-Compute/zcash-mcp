@@ -107,7 +107,7 @@ Expected flow:
 3. Call `attest_event` to create the typed ZAP1 leaf.
 4. Call `get_anchor_status` to check whether the leaf is anchored or waiting.
 5. Call `verify_proof` to verify tree inclusion.
-6. Call `zcash_prove_payment` to fetch a handoff proof bundle.
+6. Call `zap1_prove_receipt` to fetch a handoff proof bundle.
 
 Acceptance checks:
 
@@ -134,7 +134,7 @@ Red-team rejects:
 | `zcash_receipt_template` | Customer-ready receipt workflow for agent actions, payment receipts, operator lifecycle events, and policy attestations |
 | `attest_event` | Create a typed ZAP1 attestation leaf for later anchoring |
 | `verify_proof` | Verify a ZAP1 Merkle proof |
-| `zcash_prove_payment` | Fetch the full Merkle proof bundle for a leaf hash |
+| `zap1_prove_receipt` | Fetch the full Merkle proof bundle for a leaf hash |
 | `get_anchor_history` | All ZAP1 Merkle root anchors with txids and block heights |
 | `get_anchor_status` | Current Merkle tree state: root, unanchored leaves, recommendation |
 | `get_stats` | ZAP1 protocol stats: leaves, anchors, types |
@@ -143,17 +143,11 @@ Red-team rejects:
 | `zcash_identity_register` | Register an agent identity via AGENT_REGISTER attestation |
 | `zcash_reputation_score` | Fetch agent bond data and policy compliance as a reputation object |
 | `decode_memo` | Decode Zcash memo payloads: ZAP1 typed, ZIP 302, text, binary |
-| `zcash_create_invoice` | Create a ZAP1 payment invoice and receipt metadata |
-| `zcash_watch_payment` | Poll an invoice until paid or timeout |
+| `zap1_create_receipt_invoice` | Create ZAP1 receipt metadata for an external payment workflow |
+| `zap1_watch_receipt_invoice` | Poll receipt-invoice status until paid or timeout |
 | `get_block_height` | Current chain height from Zebra |
 | `lookup_transaction` | Raw transaction data by txid |
-| `get_balance` | Compatibility name for ZAP1 lifecycle and anchor status lookup by wallet hash or agent ID. It does not scan wallet balances |
-| `send_shielded` | Generate a ZIP 321 `zcash:` payment URI for an external wallet. It does not sign or broadcast a transaction |
-| `zcash_crosschain_swap` | Generate a cross-chain intent with ZAP1 attestation metadata. Execution requires an external custody and solver layer |
-| `zcash_create_wallet` | Return split-key wallet creation instructions for external Ika tooling. This server does not create or hold the key |
-| `zcash_sign_mpc` | Return MPC signing instructions for external Ika tooling. This server does not sign |
-| `zcash_shield` | Return a shield-to-Orchard transition plan with ZAP1 attestation metadata. This server does not build or broadcast the spend |
-| `zcash_verify_evm` | Verify a ZAP1 Merkle proof on-chain via EVM contract |
+| `zap1_verify_evm` | Verify a ZAP1 Merkle proof on-chain via EVM contract |
 
 ## Install
 

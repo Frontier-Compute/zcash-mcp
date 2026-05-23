@@ -6,26 +6,20 @@ export const EXPECTED_TOOL_NAMES = [
   "get_agent_status",
   "get_anchor_history",
   "get_anchor_status",
-  "get_balance",
   "get_block_height",
   "get_events",
   "get_stats",
   "lookup_transaction",
-  "send_shielded",
   "verify_proof",
-  "zcash_create_invoice",
+  "zap1_create_receipt_invoice",
   "zcash_identity_register",
-  "zcash_prove_payment",
+  "zap1_prove_receipt",
   "zcash_reputation_score",
-  "zcash_watch_payment",
-  "zcash_crosschain_swap",
+  "zap1_watch_receipt_invoice",
   "zcash_capability_manifest",
   "zcash_conformance_check",
   "zcash_receipt_template",
-  "zcash_create_wallet",
-  "zcash_sign_mpc",
-  "zcash_shield",
-  "zcash_verify_evm",
+  "zap1_verify_evm",
 ].sort();
 
 export const SAMPLE_ADDRESS =
@@ -44,14 +38,6 @@ export function parseJsonTextResult(result) {
 
   assert(text, "tool result did not include text content");
   return JSON.parse(text);
-}
-
-export function assertSendShieldedResult(result) {
-  assert.equal(result.address, SAMPLE_ADDRESS, "send_shielded echoed wrong address");
-  assert.match(result.uri, /^zcash:/, "send_shielded returned a non-zcash URI");
-  assert.match(result.uri, /amount=0\.01/, "send_shielded dropped amount");
-  assert.match(result.uri, /memo=/, "send_shielded dropped memo");
-  assert.match(result.uri, /label=zcash%20mcp/, "send_shielded dropped encoded label");
 }
 
 export function assertDecodeMemoResult(result) {

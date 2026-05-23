@@ -5,8 +5,6 @@ import process from "node:process";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 
-import { registerBalanceTool } from "./tools/balance.js";
-import { registerSendTool } from "./tools/send.js";
 import { registerMemoTool } from "./tools/memo.js";
 import { registerAttestTool } from "./tools/attest.js";
 import { registerVerifyTool } from "./tools/verify.js";
@@ -19,10 +17,6 @@ import { registerWatchTool } from "./tools/watch.js";
 import { registerReceiptTool } from "./tools/receipt.js";
 import { registerIdentityTool } from "./tools/identity.js";
 import { registerReputationTool } from "./tools/reputation.js";
-import { registerCrosschainTool } from "./tools/crosschain.js";
-import { registerCreateWalletTool } from "./tools/create-wallet.js";
-import { registerSignMpcTool } from "./tools/sign-mpc.js";
-import { registerShieldTool } from "./tools/shield.js";
 import { registerVerifyEvmTool } from "./tools/verify-evm.js";
 import { registerCapabilityTool } from "./tools/capabilities.js";
 import { registerReceiptTemplateTool } from "./tools/receipt-template.js";
@@ -30,11 +24,9 @@ import { registerConformanceTool } from "./tools/conformance.js";
 
 const server = new McpServer({
   name: "zcash-mcp",
-  version: "1.2.8",
+  version: "1.3.0",
 });
 
-registerBalanceTool(server);
-registerSendTool(server);
 registerMemoTool(server);
 registerAttestTool(server);
 registerVerifyTool(server);
@@ -47,10 +39,6 @@ registerWatchTool(server);
 registerReceiptTool(server);
 registerIdentityTool(server);
 registerReputationTool(server);
-registerCrosschainTool(server);
-registerCreateWalletTool(server);
-registerSignMpcTool(server);
-registerShieldTool(server);
 registerVerifyEvmTool(server);
 registerCapabilityTool(server);
 registerReceiptTemplateTool(server);
@@ -60,7 +48,7 @@ async function main() {
   const transport = new StdioServerTransport();
   await server.connect(transport);
   process.stdin.resume();
-  console.error("zcash-mcp server running on stdio (25 tools)");
+  console.error("zcash-mcp server running on stdio (19 tools)");
 }
 
 main().catch((err) => {

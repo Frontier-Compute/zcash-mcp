@@ -7,10 +7,10 @@ const API_TIMEOUT_MS = 10_000;
 
 export function registerWatchTool(server: McpServer) {
   server.tool(
-    "zcash_watch_payment",
-    "Poll a ZAP1 invoice until it is paid or the timeout expires. Returns paid status, txid, block height, and confirmed amount.",
+    "zap1_watch_receipt_invoice",
+    "Poll ZAP1 receipt-invoice status until paid or timeout. Returns public receipt status only; this server does not scan wallet state.",
     {
-      invoice_id: z.string().describe("Invoice ID returned by zcash_create_invoice"),
+      invoice_id: z.string().describe("Invoice ID returned by zap1_create_receipt_invoice"),
       timeout_seconds: z.number().int().positive().default(300).describe("Maximum seconds to wait for payment (default 300)"),
     },
     async ({ invoice_id, timeout_seconds }) => {

@@ -6,8 +6,8 @@ const API_TIMEOUT_MS = 15_000;
 
 export function registerInvoiceTool(server: McpServer) {
   server.tool(
-    "zcash_create_invoice",
-    "Create a ZAP1 payment invoice. Posts to the ZAP1 API and returns a payment address, amount, memo, zcash: URI, and expiry timestamp.",
+    "zap1_create_receipt_invoice",
+    "Create ZAP1 receipt metadata for an external payment workflow. Returns invoice metadata for later receipt verification; this server does not sign, scan, or broadcast.",
     {
       amount_zat: z.number().int().positive().describe("Payment amount in zatoshis (1 ZEC = 100_000_000 zatoshis)"),
       memo: z.string().max(512).describe("Memo text attached to the invoice (max 512 bytes)"),

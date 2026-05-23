@@ -6,8 +6,8 @@ const API_TIMEOUT_MS = 15_000;
 
 export function registerReceiptTool(server: McpServer) {
   server.tool(
-    "zcash_prove_payment",
-    "Fetch a ZAP1 Merkle proof bundle for a leaf hash. Returns the full proof: leaf, path, root, and anchor. Use this to prove payment inclusion on-chain.",
+    "zap1_prove_receipt",
+    "Fetch a ZAP1 Merkle proof bundle for a leaf hash. Returns the full proof: leaf, path, root, and anchor.",
     {
       leaf_hash: z.string().regex(/^[0-9a-fA-F]{64}$/, "leaf_hash must be 64-char hex").describe("Hex-encoded leaf hash (64 chars)"),
     },

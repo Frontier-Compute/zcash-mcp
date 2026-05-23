@@ -1,11 +1,9 @@
 {
   "name": "@frontiercompute/zcash-mcp",
   "description": "ZAP1 attestation and proof-verification MCP for Zcash agents. Attestation layer, not a wallet.",
-  "version": "1.2.8",
+  "version": "1.3.0",
   "transport": "stdio",
   "tools": [
-    "get_balance",
-    "send_shielded",
     "decode_memo",
     "attest_event",
     "verify_proof",
@@ -16,19 +14,15 @@
     "get_anchor_status",
     "get_events",
     "get_agent_status",
-    "zcash_create_invoice",
+    "zap1_create_receipt_invoice",
     "zcash_identity_register",
-    "zcash_prove_payment",
+    "zap1_prove_receipt",
     "zcash_reputation_score",
-    "zcash_watch_payment",
-    "zcash_crosschain_swap",
+    "zap1_watch_receipt_invoice",
     "zcash_capability_manifest",
     "zcash_conformance_check",
     "zcash_receipt_template",
-    "zcash_create_wallet",
-    "zcash_sign_mpc",
-    "zcash_shield",
-    "zcash_verify_evm"
+    "zap1_verify_evm"
   ],
   "auth": {
     "ZAP1_API_KEY": {

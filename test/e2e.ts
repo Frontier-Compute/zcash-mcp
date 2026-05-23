@@ -116,8 +116,8 @@ async function main() {
     console.log(`    decoded: ${r.format || r.memo_type}`);
   });
 
-  // 7. send_shielded (URI generation only)
-  await test("send_shielded_uri", async () => {
+  // 7. external wallet payment URI fixture
+  await test("external_payment_uri_fixture", async () => {
     const addr = "u12upd0qf8a5wrfr26szmgkq3m04mnpf0wm79vdg497cysvaumn7ptqn7008u2v28krg8pk9wzfypnqfgy0lj6s252redqejaadyzr2zxl";
     const uri = `zcash:${addr}?amount=0.001&memo=dGVzdA`;
     assert(uri.startsWith("zcash:u1"), "bad URI prefix");

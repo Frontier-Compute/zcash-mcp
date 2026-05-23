@@ -52,16 +52,16 @@ const CAPABILITY_MANIFEST = {
     ],
     proof_verification: [
       "verify_proof",
-      "zcash_prove_payment",
-      "zcash_verify_evm",
+      "zap1_prove_receipt",
+      "zap1_verify_evm",
       "get_anchor_history",
       "get_anchor_status",
       "get_stats",
     ],
     receipt_and_memo: [
       "decode_memo",
-      "zcash_create_invoice",
-      "zcash_watch_payment",
+      "zap1_create_receipt_invoice",
+      "zap1_watch_receipt_invoice",
     ],
     chain_context: [
       "get_block_height",
@@ -74,7 +74,7 @@ const CAPABILITY_MANIFEST = {
       "attestation lifecycle state",
       "proof verification",
       "memo decoding",
-      "payment URI and invoice metadata",
+      "receipt invoice metadata",
     ],
     out_of_scope: [
       "private key custody",

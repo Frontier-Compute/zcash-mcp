@@ -5,9 +5,7 @@ import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
 
 import {
-  SAMPLE_ADDRESS,
   assertDecodeMemoResult,
-  assertSendShieldedResult,
   assertToolRegistration,
   parseJsonTextResult,
 } from "./test-helpers.mjs";
@@ -50,7 +48,7 @@ export async function runMcpSmokeTest(serverEntry, { cwd, label }) {
     stage = "list tools";
     const tools = await client.listTools();
     assertToolRegistration(tools.tools);
-    assert.equal(tools.tools.length, 25, `${label}: tool count drifted`);
+    assert.equal(tools.tools.length, 19, `${label}: tool count drifted`);
 
     stage = "capability manifest";
     const capabilityResult = await client.callTool({
@@ -101,19 +99,6 @@ export async function runMcpSmokeTest(serverEntry, { cwd, label }) {
 
     stage = "ping";
     await client.ping();
-
-    stage = "send_shielded";
-    const sendResult = await client.callTool({
-      name: "send_shielded",
-      arguments: {
-        address: SAMPLE_ADDRESS,
-        amount: 0.01,
-        memo: "hello world",
-        label: "zcash mcp",
-      },
-    });
-    assert(!sendResult.isError, `${label}: send_shielded returned an error`);
-    assertSendShieldedResult(parseJsonTextResult(sendResult));
 
     stage = "decode_memo";
     const memoResult = await client.callTool({

@@ -60,7 +60,7 @@ function buildTemplate(useCase: UseCase) {
       },
       {
         step: 5,
-        tool: "zcash_prove_payment",
+        tool: "zap1_prove_receipt",
         purpose: "Fetch the proof bundle for handoff to another agent, user, auditor, or service.",
       },
     ],
