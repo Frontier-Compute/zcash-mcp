@@ -10,12 +10,23 @@ import { fileURLToPath } from "node:url";
 import { runMcpSmokeTest } from "./test-client.mjs";
 
 const execFileAsync = promisify(execFile);
-const npmCommand = process.platform === "win32" ? "npm.cmd" : "npm";
+const npmCommand = "npm";
 const here = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(here, "..");
 
+function quoteWindowsArg(arg) {
+  const value = String(arg);
+  return /^[A-Za-z0-9_./:\\-]+$/.test(value) ? value : `"${value.replace(/"/g, '""')}"`;
+}
+
 async function run(command, args, options) {
-  return execFileAsync(command, args, {
+  const execCommand = process.platform === "win32" ? process.env.ComSpec ?? "cmd.exe" : command;
+  const execArgs =
+    process.platform === "win32"
+      ? ["/d", "/s", "/c", [command, ...args.map(quoteWindowsArg)].join(" ")]
+      : args;
+
+  return execFileAsync(execCommand, execArgs, {
     maxBuffer: 10 * 1024 * 1024,
     ...options,
   });

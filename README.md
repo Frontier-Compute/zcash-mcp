@@ -5,36 +5,56 @@
 ![downloads](https://img.shields.io/npm/dw/@frontiercompute/zcash-mcp)
 ![license](https://img.shields.io/npm/l/@frontiercompute/zcash-mcp)
 
-Zcash MCP server. Connects AI agents to shielded Zcash operations. Published on the MCP registry.
+ZAP1 attestation and proof-verification MCP for Zcash agents.
 
-MCP (Model Context Protocol) is the standard way for AI models to call external tools. This server exposes 12 Zcash tools that any MCP client can use - Claude Desktop, ChatGPT, OpenClaw, or anything that speaks the protocol.
+MCP is the standard way for AI agents to call external tools. `zcash-mcp`
+exposes the ZAP1 attestation layer for agents that need verifiable receipts
+around Zcash workflows: write ZAP1 attestations to Zcash memos, query
+attestation state, and verify proof receipts.
+
+This is not a full wallet MCP. Balance scanning, private key custody, seed
+handling, PCZT signing, shielded spend construction, and lightwalletd or Zaino
+wallet synchronization are complementary wallet-layer work, not this server's
+scope.
+
+## Capability Boundary
+
+The `zcash_capability_manifest` tool gives agents a machine-readable scope map:
+
+- owned here: ZAP1 receipts, lifecycle attestations, proof verification, anchor
+  state, memo decoding, and public chain context
+- not owned here: custody, seed handling, balance scanning, PCZT signing,
+  shielded spend construction, and wallet-server synchronization
+- composition rule: use this server before or after wallet-layer actions to
+  create, query, and verify receipts
 
 ## Tools
 
 | Tool | What it does |
 |------|-------------|
-| `get_balance` | ZAP1 attestation history and anchor status for a wallet hash |
-| `send_shielded` | Generate a zcash: payment URI (ZIP 321) |
-| `decode_memo` | Decode shielded memos - ZAP1 typed, ZIP 302, text, binary |
+| `zcash_capability_manifest` | Machine-readable scope map for agent use: owned surfaces, excluded wallet functions, and composition rules |
 | `attest_event` | Write a ZAP1 attestation to the Zcash blockchain |
 | `verify_proof` | Verify a ZAP1 Merkle proof |
-| `get_stats` | ZAP1 protocol stats (leaves, anchors, types) |
-| `get_block_height` | Current chain height from Zebra |
-| `lookup_transaction` | Raw transaction data by txid |
+| `zcash_prove_payment` | Fetch the full Merkle proof bundle for a leaf hash |
 | `get_anchor_history` | All ZAP1 Merkle root anchors with txids and block heights |
 | `get_anchor_status` | Current Merkle tree state: root, unanchored leaves, recommendation |
+| `get_stats` | ZAP1 protocol stats: leaves, anchors, types |
 | `get_events` | Recent ZAP1 attestation events with type, wallet hash, leaf hash |
 | `get_agent_status` | Attestation summary for a ZAP1 agent ID |
-| `zcash_create_invoice` | Create a ZAP1 payment invoice, returns address, amount, zcash: URI, expiry |
-| `zcash_watch_payment` | Poll an invoice until paid or timeout, returns txid, height, amount |
-| `zcash_prove_payment` | Fetch the full Merkle proof bundle for a leaf hash |
 | `zcash_identity_register` | Register an agent identity via AGENT_REGISTER attestation |
 | `zcash_reputation_score` | Fetch agent bond data and policy compliance as a reputation object |
-| `zcash_crosschain_swap` | Cross-chain swap intent: ZEC transparent to BTC, USDC, USDT via Ika or NEAR |
-| `zcash_create_wallet` | Create a split-key wallet via Ika 2PC-MPC (secp256k1 signs for ZEC, BTC, ETH) |
-| `zcash_sign_mpc` | Sign a message hash through Ika 2PC-MPC (neither party sees the full key) |
-| `zcash_shield` | Move ZEC from transparent MPC custody to shielded Orchard pool |
-| `zcash_verify_evm` | Verify a ZAP1 Merkle proof on-chain via EVM contract (Sepolia, Base, Arbitrum) |
+| `decode_memo` | Decode Zcash memo payloads: ZAP1 typed, ZIP 302, text, binary |
+| `zcash_create_invoice` | Create a ZAP1 payment invoice and receipt metadata |
+| `zcash_watch_payment` | Poll an invoice until paid or timeout |
+| `get_block_height` | Current chain height from Zebra |
+| `lookup_transaction` | Raw transaction data by txid |
+| `get_balance` | ZAP1 lifecycle and anchor status for a wallet hash or agent ID |
+| `send_shielded` | Generate a ZIP 321 `zcash:` payment URI |
+| `zcash_crosschain_swap` | Generate a cross-chain swap intent with ZAP1 attestation metadata |
+| `zcash_create_wallet` | Return split-key wallet creation instructions for external Ika tooling |
+| `zcash_sign_mpc` | Return MPC signing instructions for external Ika tooling |
+| `zcash_shield` | Return a shield-to-Orchard transition plan with ZAP1 attestation metadata |
+| `zcash_verify_evm` | Verify a ZAP1 Merkle proof on-chain via EVM contract |
 
 ## Install
 
@@ -48,6 +68,30 @@ Or install globally:
 npm install -g @frontiercompute/zcash-mcp
 ```
 
+## Quickstart
+
+Add this to your MCP config:
+
+```json
+{
+  "mcpServers": {
+    "zcash": {
+      "command": "npx",
+      "args": ["@frontiercompute/zcash-mcp"]
+    }
+  }
+}
+```
+
+Restart your client and ask for the current Zcash block height. Read-only tools
+do not need an API key.
+
+Get a trial key for write operations:
+
+```bash
+curl -s -X POST https://frontiercompute.cash/api/trial-key
+```
+
 ## Configuration
 
 Environment variables:
@@ -56,7 +100,7 @@ Environment variables:
 |----------|---------|-------------|
 | `ZEBRA_RPC_URL` | `http://127.0.0.1:8232` | Zebra node JSON-RPC endpoint |
 | `ZAP1_API_URL` | `https://pay.frontiercompute.io` | ZAP1 attestation API |
-| `ZAP1_API_KEY` | none | API key for attest_event |
+| `ZAP1_API_KEY` | none | API key for write operations |
 
 ### Claude Desktop
 
@@ -77,11 +121,12 @@ Add to `~/Library/Application Support/Claude/claude_desktop_config.json`:
 }
 ```
 
-### Any MCP client
+### Any MCP Client
 
-The server communicates over stdio using JSON-RPC. Point your MCP client at the `zcash-mcp` binary.
+The server communicates over stdio using JSON-RPC. Point your MCP client at the
+`zcash-mcp` binary.
 
-## Build from source
+## Build From Source
 
 ```bash
 git clone https://github.com/Frontier-Compute/zcash-mcp.git
@@ -93,7 +138,8 @@ node dist/index.js
 
 ## Testing
 
-Offline verification covers the built stdio server and a clean-room install from the packed npm tarball:
+Offline verification covers the built stdio server and a clean-room install from
+the packed npm tarball:
 
 ```bash
 npm run test:offline
@@ -108,60 +154,40 @@ ZAP1_API_KEY=your-key-here \
 npm run test:live
 ```
 
-`test:live` drives the MCP server over stdio and exercises the live tool surface, not just the underlying HTTP endpoints. Set `ZAP1_AGENT_ID` if you want the `get_agent_status` check to target a specific deployed agent.
+`test:live` drives the MCP server over stdio and exercises the live tool surface,
+not just the underlying HTTP endpoints. Set `ZAP1_AGENT_ID` if you want the
+`get_agent_status` check to target a specific deployed agent.
 
 GitHub Actions mirrors that split:
 
-- `.github/workflows/offline-ci.yml` runs deterministic packaging and MCP handshake checks on every push and pull request.
-- `.github/workflows/live-e2e.yml` runs secret-backed live checks on `main`, on a schedule, and by manual dispatch.
+- `.github/workflows/offline-ci.yml` runs deterministic packaging and MCP
+  handshake checks on every push and pull request.
+- `.github/workflows/live-e2e.yml` runs secret-backed live checks on `main`, on
+  a schedule, and by manual dispatch.
 
 ## Dependencies
 
-- A running [Zebra](https://github.com/ZcashFoundation/zebra) node for chain queries (get_block_height, lookup_transaction)
-- The ZAP1 API at pay.frontiercompute.io for attestation tools (get_balance, attest_event, verify_proof, get_stats, get_anchor_history, get_anchor_status, get_events, get_agent_status)
+- A running [Zebra](https://github.com/ZcashFoundation/zebra) node for chain
+  queries
+- The ZAP1 API for attestation, proof, anchor, event, and receipt tools
 - Memo decoding works locally with no external dependencies
 
 ## Related Packages
 
 | Package | What it does |
 |---------|-------------|
-| [@frontiercompute/zcash-ika](https://www.npmjs.com/package/@frontiercompute/zcash-ika) | Zcash + Bitcoin signing via Ika 2PC-MPC |
+| [@frontiercompute/zcash-ika](https://www.npmjs.com/package/@frontiercompute/zcash-ika) | Zcash and Bitcoin signing via Ika 2PC-MPC |
 | [@frontiercompute/openclaw-zap1](https://www.npmjs.com/package/@frontiercompute/openclaw-zap1) | OpenClaw skill for ZAP1 attestation |
 | [@frontiercompute/zap1](https://www.npmjs.com/package/@frontiercompute/zap1) | ZAP1 attestation client |
 | [@frontiercompute/silo-zap1](https://www.npmjs.com/package/@frontiercompute/silo-zap1) | Silo agent attestation via ZAP1 |
 
 ## Links
 
-- [Dashboard](https://frontiercompute.cash/dashboard.html) - live ZAP1 attestation dashboard
-- [MCP Registry](https://registry.modelcontextprotocol.io/) - published MCP server listing
-- [Frontier Compute](https://frontiercompute.cash) - project homepage
+- [Dashboard](https://frontiercompute.cash/dashboard.html)
+- [MCP Registry](https://registry.modelcontextprotocol.io/)
+- [Frontier Compute](https://frontiercompute.cash)
+- [Live stats](https://api.frontiercompute.cash/stats)
 
 ## License
 
 MIT
-
-## quickstart (5 minutes)
-
-add to your MCP config:
-
-```json
-{
-  "mcpServers": {
-    "zcash": {
-      "command": "npx",
-      "args": ["@frontiercompute/zcash-mcp"]
-    }
-  }
-}
-```
-
-restart your client.  ask: "what is the current zcash block height?"
-
-done.  22 tools available.  no API key needed for read operations.
-
-get a trial key for write operations:
-
-```
-curl -s -X POST https://frontiercompute.cash/api/trial-key
-```
-

@@ -50,7 +50,17 @@ export async function runMcpSmokeTest(serverEntry, { cwd, label }) {
     stage = "list tools";
     const tools = await client.listTools();
     assertToolRegistration(tools.tools);
-    assert.equal(tools.tools.length, 22, `${label}: tool count drifted`);
+    assert.equal(tools.tools.length, 23, `${label}: tool count drifted`);
+
+    stage = "capability manifest";
+    const capabilityResult = await client.callTool({
+      name: "zcash_capability_manifest",
+      arguments: {},
+    });
+    assert(!capabilityResult.isError, `${label}: zcash_capability_manifest returned an error`);
+    const manifest = parseJsonTextResult(capabilityResult);
+    assert.equal(manifest.posture, "attestation_layer_not_wallet", `${label}: bad capability posture`);
+    assert(manifest.wallet_boundary.out_of_scope.includes("PCZT signing"), `${label}: missing wallet boundary`);
 
     stage = "ping";
     await client.ping();

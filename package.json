@@ -1,7 +1,7 @@
 {
   "name": "@frontiercompute/zcash-mcp",
-  "version": "1.2.2",
-  "description": "Zcash MCP server - shielded operations for AI agents",
+  "version": "1.2.3",
+  "description": "ZAP1 attestation and proof-verification MCP for Zcash agents",
   "type": "module",
   "main": "dist/index.js",
   "bin": {
@@ -25,14 +25,16 @@
   },
   "files": [
     "dist/",
+    ".well-known/",
     "LICENSE",
     "README.md"
   ],
   "keywords": [
     "zcash",
     "mcp",
-    "shielded",
     "zap1",
+    "attestation",
+    "proof",
     "ai",
     "agent"
   ],

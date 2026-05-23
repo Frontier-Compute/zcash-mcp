@@ -19,6 +19,7 @@ export const EXPECTED_TOOL_NAMES = [
   "zcash_reputation_score",
   "zcash_watch_payment",
   "zcash_crosschain_swap",
+  "zcash_capability_manifest",
   "zcash_create_wallet",
   "zcash_sign_mpc",
   "zcash_shield",

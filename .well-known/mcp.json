@@ -1,0 +1,50 @@
+{
+  "name": "@frontiercompute/zcash-mcp",
+  "description": "ZAP1 attestation and proof-verification MCP for Zcash agents. Attestation layer, not a wallet.",
+  "version": "1.2.3",
+  "transport": "stdio",
+  "tools": [
+    "get_balance",
+    "send_shielded",
+    "decode_memo",
+    "attest_event",
+    "verify_proof",
+    "get_stats",
+    "get_block_height",
+    "lookup_transaction",
+    "get_anchor_history",
+    "get_anchor_status",
+    "get_events",
+    "get_agent_status",
+    "zcash_create_invoice",
+    "zcash_identity_register",
+    "zcash_prove_payment",
+    "zcash_reputation_score",
+    "zcash_watch_payment",
+    "zcash_crosschain_swap",
+    "zcash_capability_manifest",
+    "zcash_create_wallet",
+    "zcash_sign_mpc",
+    "zcash_shield",
+    "zcash_verify_evm"
+  ],
+  "auth": {
+    "ZAP1_API_KEY": {
+      "required": "write",
+      "description": "Required for attest_event. Optional for read-only tools."
+    },
+    "ZEBRA_RPC_URL": {
+      "required": false,
+      "default": "http://127.0.0.1:8232",
+      "description": "Zebra RPC endpoint for chain queries."
+    },
+    "ZAP1_API_URL": {
+      "required": false,
+      "default": "https://api.frontiercompute.cash",
+      "description": "ZAP1 attestation API endpoint."
+    }
+  },
+  "repository": "https://github.com/Frontier-Compute/zcash-mcp",
+  "author": "Zk-nd3r",
+  "license": "MIT"
+}
