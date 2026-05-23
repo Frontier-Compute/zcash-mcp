@@ -17,6 +17,24 @@ handling, PCZT signing, shielded spend construction, and lightwalletd or Zaino
 wallet synchronization are complementary wallet-layer work, not this server's
 scope.
 
+## Why ZAP1
+
+Wallet MCPs can move value. ZAP1 proves the workflow around the value.
+
+Agent systems need more than a payment or a transaction lookup. They need a
+receipt that another agent, user, auditor, or service can verify later:
+
+- what event was asserted
+- which agent or workflow asserted it
+- which ZAP1 leaf records it
+- which Merkle root includes it
+- which Zcash transaction anchored that root
+- how to verify the proof without trusting the original agent
+
+That is the lane for this server. It gives Zcash agents a receipt layer that can
+sit beside any wallet, signer, custody system, lightwalletd stack, Zaino stack,
+or application-specific payment flow.
+
 ## Capability Boundary
 
 The `zcash_capability_manifest` tool gives agents a machine-readable scope map:
@@ -27,6 +45,23 @@ The `zcash_capability_manifest` tool gives agents a machine-readable scope map:
   shielded spend construction, and wallet-server synchronization
 - composition rule: use this server before or after wallet-layer actions to
   create, query, and verify receipts
+
+Good fits:
+
+- agent action receipts
+- payment and invoice proof packets
+- operator lifecycle events
+- policy and reputation attestations
+- public anchor verification for private workflows
+- cross-agent handoffs where the receiver needs proof, not custody
+
+Poor fits:
+
+- holding keys
+- scanning wallet balances
+- signing PCZTs
+- broadcasting shielded spends
+- replacing a wallet SDK
 
 ## Tools
 

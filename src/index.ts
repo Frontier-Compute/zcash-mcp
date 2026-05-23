@@ -28,7 +28,7 @@ import { registerCapabilityTool } from "./tools/capabilities.js";
 
 const server = new McpServer({
   name: "zcash-mcp",
-  version: "1.2.3",
+  version: "1.2.4",
 });
 
 registerBalanceTool(server);

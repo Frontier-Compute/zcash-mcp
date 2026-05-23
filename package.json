@@ -1,6 +1,6 @@
 {
   "name": "@frontiercompute/zcash-mcp",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "description": "ZAP1 attestation and proof-verification MCP for Zcash agents",
   "type": "module",
   "main": "dist/index.js",

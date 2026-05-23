@@ -11,6 +11,22 @@ const CAPABILITY_MANIFEST = {
     "decode Zcash memo payloads that carry ZAP1 or receipt data",
     "read public chain context needed to interpret ZAP1 anchors",
   ],
+  market_fit: {
+    problem: "Agents can call wallets and services, but they also need receipts that prove what happened after the fact.",
+    zap1_role: "ZAP1 records typed workflow events, commits them into a Merkle tree, and anchors roots to Zcash.",
+    composition: "Use wallet-layer tools for balance, signing, sync, and spend construction. Use this server for attestations, proof packets, and verification.",
+    durable_value: "A receiver can verify the receipt without trusting the original agent process.",
+  },
+  receipt_packet: [
+    "event_type",
+    "agent_or_wallet_hash",
+    "leaf_hash",
+    "merkle_root",
+    "merkle_path",
+    "anchor_txid",
+    "anchor_height",
+    "verification_url",
+  ],
   supported_surfaces: {
     attestation: [
       "attest_event",
