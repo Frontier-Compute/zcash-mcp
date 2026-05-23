@@ -5,10 +5,13 @@
 ![downloads](https://img.shields.io/npm/dw/@frontiercompute/zcash-mcp)
 ![license](https://img.shields.io/npm/l/@frontiercompute/zcash-mcp)
 
-ZAP1 attestation and proof-verification MCP for Zcash agents.
+ZAP1 receipts for Zcash agents: verify workflows without trusting the server.
 
 ZAP1 is an attestation and proof rail for Zcash workflows. Frontier Compute
 maintains the reference ZAP1 implementation.
+
+A wrapper makes you trust the server. ZAP1 makes the server unnecessary to
+trust.
 
 Core rule: observe state, bound the claim, hash evidence, issue a receipt,
 verify later.
@@ -30,6 +33,9 @@ scope.
 
 Wallet MCPs can move value. ZAP1 proves the workflow around the value, and the
 counterparty can verify the proof without trusting Frontier.
+
+Tool servers expose what a backend says right now. ZAP1 produces a receipt that
+another party can verify later from the schema, proof material, and Zcash anchor.
 
 ZAP1 is the proof rail for Zcash agent workflows:
 

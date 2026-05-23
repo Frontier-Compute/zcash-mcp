@@ -24,7 +24,7 @@ import { registerConformanceTool } from "./tools/conformance.js";
 
 const server = new McpServer({
   name: "zcash-mcp",
-  version: "1.3.0",
+  version: "1.3.1",
 });
 
 registerMemoTool(server);

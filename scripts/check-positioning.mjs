@@ -5,6 +5,8 @@ import process from "node:process";
 const root = process.cwd();
 const canonical =
   "ZAP1 is an attestation and proof rail for Zcash workflows. Frontier Compute maintains the reference ZAP1 implementation.";
+const trustBoundary =
+  "A wrapper makes you trust the server. ZAP1 makes the server unnecessary to trust.";
 
 const requiredFiles = [
   "README.md",
@@ -39,6 +41,11 @@ for (const file of requiredFiles) {
 
   if (!normalizedText.includes(canonical) && ![".well-known/mcp.json", "server.json"].includes(file)) {
     console.error(`${file}: missing canonical ZAP1 positioning line`);
+    failed = true;
+  }
+
+  if (!normalizedText.includes(trustBoundary) && ![".well-known/mcp.json", "server.json"].includes(file)) {
+    console.error(`${file}: missing canonical ZAP1 trust-boundary line`);
     failed = true;
   }
 

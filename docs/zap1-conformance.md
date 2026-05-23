@@ -3,6 +3,9 @@
 ZAP1 is an attestation and proof rail for Zcash workflows. Frontier Compute
 maintains the reference ZAP1 implementation.
 
+A wrapper makes you trust the server. ZAP1 makes the server unnecessary to
+trust.
+
 Core rule: observe state, bound the claim, hash evidence, issue a receipt,
 verify later.
 
@@ -12,6 +15,10 @@ hashes, anchors, and independent verification.
 This document defines the minimum contract for a ZAP1-compatible integration.
 It is intentionally narrow. Wallets, signers, payment systems, and explorers can
 compose with ZAP1 without becoming ZAP1.
+
+The conformance problem is not whether an endpoint can be wrapped. Any backend
+can be exposed to agents. The question is whether a receiver can verify the
+claim after the backend is unavailable or no longer trusted.
 
 ## Required Claims
 

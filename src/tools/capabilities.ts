@@ -5,6 +5,7 @@ const CAPABILITY_MANIFEST = {
   layer: "ZAP1 attestation and proof verification",
   posture: "attestation_layer_not_wallet",
   category_claim: "ZAP1 is an attestation and proof rail for Zcash workflows. Frontier Compute maintains the reference ZAP1 implementation.",
+  trust_boundary: "A wrapper makes you trust the server. ZAP1 makes the server unnecessary to trust.",
   operating_rule: "Observe state, bound the claim, hash evidence, issue a receipt, verify later.",
   motto: "ZAP1 coule de source: receipt truth flows from observed state, bounded claims, hashes, anchors, and independent verification.",
   proof_rail_verbs: ["attest", "anchor", "prove", "verify"],
@@ -19,7 +20,7 @@ const CAPABILITY_MANIFEST = {
     problem: "Agents can call wallets and services, but they also need receipts that prove what happened after the fact.",
     zap1_role: "ZAP1 records typed workflow events, commits them into a Merkle tree, and anchors roots to Zcash.",
     composition: "Use wallet-layer tools for balance, signing, sync, and spend construction. Use this server for attestations, proof packets, and verification.",
-    durable_value: "A receiver can verify the receipt without trusting the original agent process.",
+    durable_value: "A receiver can verify the receipt from the schema, proof material, and Zcash anchor without trusting the original server.",
   },
   proof_rail_boundary: {
     covers: "receipts, anchor proofs, Merkle inclusion, memo decoding, and verification context",

@@ -1,7 +1,7 @@
 {
   "name": "@frontiercompute/zcash-mcp",
-  "version": "1.3.0",
-  "description": "ZAP1 attestation and proof-verification MCP for Zcash agents",
+  "version": "1.3.1",
+  "description": "ZAP1 receipts for Zcash agents: verify workflows without trusting the server",
   "type": "module",
   "main": "dist/index.js",
   "bin": {

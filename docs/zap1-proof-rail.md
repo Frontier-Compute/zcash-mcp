@@ -3,6 +3,9 @@
 ZAP1 is an attestation and proof rail for Zcash workflows. Frontier Compute
 maintains the reference ZAP1 implementation.
 
+A wrapper makes you trust the server. ZAP1 makes the server unnecessary to
+trust.
+
 Core rule: observe state, bound the claim, hash evidence, issue a receipt,
 verify later.
 
@@ -11,6 +14,9 @@ hashes, anchors, and independent verification.
 
 Wallets move value. ZAP1 proves the workflow around the value, and the
 counterparty can verify the proof without trusting Frontier.
+
+Tool servers expose what a backend says right now. ZAP1 produces a receipt that
+another party can verify later from the schema, proof material, and Zcash anchor.
 
 The core surface is four verbs:
 
