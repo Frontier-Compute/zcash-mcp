@@ -1,0 +1,11 @@
+{
+  "wallet_provider": "wallet-demo",
+  "action_type": "shielded_send",
+  "action_status": "confirmed",
+  "action_reference": "op-123",
+  "txid": "2222222222222222222222222222222222222222222222222222222222222222",
+  "amount_zat": 1000,
+  "asset_code": "ZEC",
+  "observed_at": "2026-05-24T00:00:00Z",
+  "result_hash": "3333333333333333333333333333333333333333333333333333333333333333"
+}

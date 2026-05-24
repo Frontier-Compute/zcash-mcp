@@ -15,6 +15,7 @@ const CAPABILITY_MANIFEST = {
     "verify ZAP1 proof receipts and Merkle inclusion",
     "decode Zcash memo payloads that carry ZAP1 or receipt data",
     "read public chain context needed to interpret ZAP1 anchors",
+    "convert wallet-layer action results into hash-only ZAP1 receipt requests",
   ],
   market_fit: {
     problem: "Agents can call wallets and services, but they also need receipts that prove what happened after the fact.",
@@ -63,6 +64,7 @@ const CAPABILITY_MANIFEST = {
       "decode_memo",
       "zap1_create_receipt_invoice",
       "zap1_watch_receipt_invoice",
+      "zap1_wallet_receipt_request",
     ],
     chain_context: [
       "get_block_height",
@@ -89,7 +91,7 @@ const CAPABILITY_MANIFEST = {
   agent_policy: {
     safe_default: "Use this server for receipts, attestations, and verification before or after wallet-layer actions.",
     reject_as_wallet: "Do not ask this server to hold keys, scan wallet state, or sign transactions.",
-    compose_with_wallet_mcp: "Pair with a wallet MCP when an agent needs balance, signing, sync, or spend construction.",
+    compose_with_wallet_mcp: "Pair with a wallet MCP when an agent needs balance, signing, sync, or spend construction. Use zap1_wallet_receipt_request to hash the wallet result before attestation.",
   },
 };
 

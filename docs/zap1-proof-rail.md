@@ -37,6 +37,7 @@ In scope:
 
 - agent action receipts
 - payment and invoice receipt packets
+- wallet action receipts
 - operator lifecycle events
 - policy and reputation attestations
 - Zcash memo decoding for ZAP1 payloads
@@ -92,7 +93,8 @@ Before a wallet action:
 
 After a wallet action:
 
-- attest the transaction reference, invoice result, output hash, or completion state
+- call `zap1_wallet_receipt_request` with the wallet result
+- attest the returned hash-only request
 - anchor the receipt
 - hand the proof packet to the counterparty
 

@@ -92,9 +92,11 @@ Safe integration pattern:
 
 1. Wallet or service performs its native action.
 2. Integration hashes the relevant public or private evidence.
-3. Integration submits the typed ZAP1 event.
-4. Integration waits for anchor context when final evidence is required.
-5. Downstream verifier checks the ZAP1 receipt without trusting the original
+3. Wallet integrations call `zap1_wallet_receipt_request` to build bounded
+   `attest_event` arguments.
+4. Integration submits the typed ZAP1 event.
+5. Integration waits for anchor context when final evidence is required.
+6. Downstream verifier checks the ZAP1 receipt without trusting the original
    runtime.
 
 ## Red-Team Rejects

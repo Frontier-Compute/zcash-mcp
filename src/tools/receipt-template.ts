@@ -14,6 +14,12 @@ const USE_CASES = {
     required_fields: ["wallet_hash", "invoice_id", "amount_zat", "payment_reference_hash"],
     customer_value: "A payment flow gets an audit-grade receipt without giving this server custody or signing authority.",
   },
+  wallet_action_receipt: {
+    event_type: "WALLET_ACTION_RECEIPT",
+    intent: "Let a wallet-layer product execute its native action and hand ZAP1 a hash-only receipt request for independent verification.",
+    required_fields: ["wallet_provider", "action_type", "action_status", "claim_hash", "evidence_hash"],
+    customer_value: "A wallet keeps custody and signing while producing a receipt another service can verify without trusting the wallet server.",
+  },
   operator_lifecycle: {
     event_type: "OPERATOR_EVENT",
     intent: "Record deployment, upgrade, incident, recovery, or policy state as a verifiable lifecycle event.",
@@ -45,21 +51,35 @@ function buildTemplate(useCase: UseCase) {
       },
       {
         step: 2,
-        tool: "attest_event",
-        purpose: "Create the typed ZAP1 leaf for the workflow event.",
+        tool: useCase === "wallet_action_receipt" ? "zap1_wallet_receipt_request" : "attest_event",
+        purpose:
+          useCase === "wallet_action_receipt"
+            ? "Convert a wallet action result into hash-only attest_event arguments."
+            : "Create the typed ZAP1 leaf for the workflow event.",
       },
       {
         step: 3,
-        tool: "get_anchor_status",
-        purpose: "Check whether the leaf is anchored or waiting under the current root.",
+        tool: useCase === "wallet_action_receipt" ? "attest_event" : "get_anchor_status",
+        purpose:
+          useCase === "wallet_action_receipt"
+            ? "Create the typed ZAP1 leaf from the generated attest_event_args."
+            : "Check whether the leaf is anchored or waiting under the current root.",
       },
       {
         step: 4,
+        tool: useCase === "wallet_action_receipt" ? "get_anchor_status" : "verify_proof",
+        purpose:
+          useCase === "wallet_action_receipt"
+            ? "Check whether the wallet receipt leaf is anchored or pending."
+            : "Verify that the leaf exists in the ZAP1 attestation tree.",
+      },
+      {
+        step: 5,
         tool: "verify_proof",
         purpose: "Verify that the leaf exists in the ZAP1 attestation tree.",
       },
       {
-        step: 5,
+        step: 6,
         tool: "zap1_prove_receipt",
         purpose: "Fetch the proof bundle for handoff to another agent, user, auditor, or service.",
       },
@@ -96,7 +116,7 @@ export function registerReceiptTemplateTool(server: McpServer) {
     "Return a customer-ready ZAP1 receipt workflow for agent actions, payment receipts, operator lifecycle events, or policy attestations.",
     {
       use_case: z
-        .enum(["agent_action", "payment_receipt", "operator_lifecycle", "policy_attestation"])
+        .enum(["agent_action", "payment_receipt", "wallet_action_receipt", "operator_lifecycle", "policy_attestation"])
         .default("agent_action")
         .describe("Receipt workflow to generate."),
     },

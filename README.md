@@ -62,7 +62,9 @@ or application-specific payment flow.
 See [ZAP1 Proof Rail](docs/zap1-proof-rail.md) for the category boundary,
 receipt model, integration pattern, and red-team rejects. See
 [ZAP1 Conformance](docs/zap1-conformance.md) for the receipt contract agents
-and integrations should satisfy.
+and integrations should satisfy. See
+[Wallet Receipt Integration](docs/wallet-receipt-integration.md) for the
+wallet-action handoff pattern.
 
 ## Capability Boundary
 
@@ -79,6 +81,7 @@ Good fits:
 
 - agent action receipts
 - payment and invoice proof packets
+- wallet action receipts
 - operator lifecycle events
 - policy and reputation attestations
 - public anchor verification for private workflows
@@ -110,10 +113,12 @@ Expected flow:
 
 1. Call `zcash_capability_manifest` to confirm the attestation boundary.
 2. Call `zcash_receipt_template` for the use case.
-3. Call `attest_event` to create the typed ZAP1 leaf.
-4. Call `get_anchor_status` to check whether the leaf is anchored or waiting.
-5. Call `verify_proof` to verify tree inclusion.
-6. Call `zap1_prove_receipt` to fetch a handoff proof bundle.
+3. For wallet actions, call `zap1_wallet_receipt_request` to convert the wallet
+   result into hash-only `attest_event` arguments.
+4. Call `attest_event` to create the typed ZAP1 leaf.
+5. Call `get_anchor_status` to check whether the leaf is anchored or waiting.
+6. Call `verify_proof` to verify tree inclusion.
+7. Call `zap1_prove_receipt` to fetch a handoff proof bundle.
 
 Acceptance checks:
 
@@ -138,6 +143,7 @@ Red-team rejects:
 | `zcash_capability_manifest` | Machine-readable scope map for agent use: covered surfaces, excluded wallet functions, and composition rules |
 | `zcash_conformance_check` | Validate a ZAP1 receipt packet against the frozen v1 receipt contract |
 | `zcash_receipt_template` | Customer-ready receipt workflow for agent actions, payment receipts, operator lifecycle events, and policy attestations |
+| `zap1_wallet_receipt_request` | Convert a wallet-layer action result into hash-only ZAP1 receipt request fields |
 | `attest_event` | Create a typed ZAP1 attestation leaf for later anchoring |
 | `verify_proof` | Verify a ZAP1 Merkle proof |
 | `zap1_prove_receipt` | Fetch the full Merkle proof bundle for a leaf hash |

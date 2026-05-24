@@ -48,7 +48,7 @@ export async function runMcpSmokeTest(serverEntry, { cwd, label }) {
     stage = "list tools";
     const tools = await client.listTools();
     assertToolRegistration(tools.tools);
-    assert.equal(tools.tools.length, 19, `${label}: tool count drifted`);
+    assert.equal(tools.tools.length, 20, `${label}: tool count drifted`);
 
     stage = "capability manifest";
     const capabilityResult = await client.callTool({
@@ -71,6 +71,29 @@ export async function runMcpSmokeTest(serverEntry, { cwd, label }) {
     assert(
       receiptTemplate.acceptance_checks.includes("the verifier can repeat verification without trusting the original agent"),
       `${label}: missing customer verification check`
+    );
+
+    stage = "wallet receipt request";
+    const walletReceiptResult = await client.callTool({
+      name: "zap1_wallet_receipt_request",
+      arguments: {
+        wallet_provider: "wallet-demo",
+        action_type: "shielded_send",
+        action_status: "confirmed",
+        action_reference: "op-123",
+        txid: "2".repeat(64),
+        amount_zat: 1000,
+        result_hash: "3".repeat(64),
+      },
+    });
+    assert(!walletReceiptResult.isError, `${label}: zap1_wallet_receipt_request returned an error`);
+    const walletReceipt = parseJsonTextResult(walletReceiptResult);
+    assert.equal(walletReceipt.use_case, "wallet_action_receipt", `${label}: bad wallet receipt use case`);
+    assert.equal(walletReceipt.attest_event_args.event_type, "WALLET_ACTION_RECEIPT", `${label}: bad wallet receipt event type`);
+    assert.match(walletReceipt.hashes.subject_hash, /^[0-9a-f]{64}$/, `${label}: bad wallet subject hash`);
+    assert(
+      walletReceipt.next_steps.includes("Call attest_event with attest_event_args."),
+      `${label}: missing attest_event next step`
     );
 
     stage = "conformance check";
