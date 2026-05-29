@@ -16,9 +16,6 @@ trust.
 Core rule: observe state, bound the claim, hash evidence, issue a receipt,
 verify later.
 
-ZAP1 coule de source: receipt truth flows from observed state, bounded claims,
-hashes, anchors, and independent verification.
-
 MCP is the standard way for AI agents to call external tools. `zcash-mcp`
 exposes the ZAP1 attestation layer for agents that need verifiable receipts
 around Zcash workflows: create ZAP1 attestation leaves, query anchor state,
@@ -64,7 +61,11 @@ receipt model, integration pattern, and red-team rejects. See
 [ZAP1 Conformance](docs/zap1-conformance.md) for the receipt contract agents
 and integrations should satisfy. See
 [Wallet Receipt Integration](docs/wallet-receipt-integration.md) for the
-wallet-action handoff pattern.
+wallet-action handoff pattern. See
+[External Rail Receipts](docs/external-rail-receipts.md) for generic
+external-action receipt requests, and
+[Receipt Disclosure Profiles](docs/receipt-disclosure-profiles.md) for
+public, counterparty, auditor, grant, compliance, and internal packet shapes.
 
 ## Capability Boundary
 
@@ -82,7 +83,10 @@ Good fits:
 - agent action receipts
 - payment and invoice proof packets
 - wallet action receipts
+- external action receipts
 - operator lifecycle events
+- grant proof packets
+- compliance audit packets
 - policy and reputation attestations
 - public anchor verification for private workflows
 - cross-agent handoffs where the receiver needs proof, not custody
@@ -132,9 +136,13 @@ Red-team rejects:
 
 - treating a payment URI as proof of payment
 - treating an unanchored leaf as final settlement evidence
+- treating a quote, route, or intent hash as settlement evidence by itself
 - asking this server to sign, scan balances, recover seeds, or hold keys
 - mixing custody claims into ZAP1 receipt claims
 - hiding the distinction between wallet action and receipt verification
+
+ZAP1 verifies ZAP1 receipts. It does not audit or guarantee any external wallet,
+route, payment, bridge, exchange, or settlement system referenced by a receipt.
 
 ## Tools
 
@@ -144,6 +152,13 @@ Red-team rejects:
 | `zcash_conformance_check` | Validate a ZAP1 receipt packet against the frozen v1 receipt contract |
 | `zcash_receipt_template` | Customer-ready receipt workflow for agent actions, payment receipts, operator lifecycle events, and policy attestations |
 | `zap1_wallet_receipt_request` | Convert a wallet-layer action result into hash-only ZAP1 receipt request fields |
+| `zap1_attest_external_action` | Build a ZAP1 receipt request for an action executed by an external rail without routing, signing, custody, or settlement |
+| `zap1_verify_external_receipt` | Validate an external-action ZAP1 receipt packet without trusting or calling the external rail |
+| `zap1_extract_proof_artifact` | Extract the portable proof artifact from a ZAP1 receipt |
+| `zap1_check_anchor_freshness_at_height` | Check anchor confirmation depth from supplied Zcash heights |
+| `zap1_verify_receipt_chain` | Validate a sequence of ZAP1 receipt packets and summarize anchor state |
+| `zap1_compare_receipt_claims` | Compare two ZAP1 receipts for claim, evidence, event, and anchor divergence |
+| `zap1_audit_event_log` | Replay a receipt sequence against a caller-supplied event-type policy |
 | `attest_event` | Create a typed ZAP1 attestation leaf for later anchoring |
 | `verify_proof` | Verify a ZAP1 Merkle proof |
 | `zap1_prove_receipt` | Fetch the full Merkle proof bundle for a leaf hash |

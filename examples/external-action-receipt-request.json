@@ -1,0 +1,22 @@
+{
+  "rail_id": "external-demo",
+  "action_type": "cross_chain_route_completed",
+  "intent_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "quote_hash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "route_hash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "origin_txid": "1111111111111111111111111111111111111111111111111111111111111111",
+  "settlement_txid": "2222222222222222222222222222222222222222222222222222222222222222",
+  "destination_txid": "3333333333333333333333333333333333333333333333333333333333333333",
+  "status": "rail_settled",
+  "disclosed_fields": [
+    "rail_id",
+    "action_type",
+    "status",
+    "origin_txid",
+    "settlement_txid",
+    "destination_txid"
+  ],
+  "redaction_policy": "counterparty_visible",
+  "counterparty_digest": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+  "operator_digest": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+}

@@ -7,6 +7,16 @@ const SCHEMA_VERSION = "zap1-receipt-v1";
 const ReceiptSchema = z.object({
   schema_version: z.literal(SCHEMA_VERSION),
   event_type: z.string().min(1).max(64),
+  profile: z
+    .enum([
+      "public_hash_only",
+      "counterparty_receipt",
+      "auditor_packet",
+      "operator_internal",
+      "grant_proof_packet",
+      "compliance_audit_packet",
+    ])
+    .optional(),
   subject_hash: z.string().regex(HEX_64, "subject_hash must be 64-char hex"),
   claim_hash: z.string().regex(HEX_64, "claim_hash must be 64-char hex"),
   evidence_hash: z.string().regex(HEX_64, "evidence_hash must be 64-char hex"),
@@ -16,6 +26,21 @@ const ReceiptSchema = z.object({
   anchor_txid: z.string().regex(HEX_64, "anchor_txid must be 64-char hex").optional(),
   anchor_height: z.number().int().nonnegative().optional(),
   verification_url: z.string().url().optional(),
+  disclosed_fields: z.array(z.string().min(1).max(64)).optional(),
+  redacted_fields: z.array(z.string().min(1).max(64)).optional(),
+  redaction_policy: z
+    .enum([
+      "hash_only",
+      "counterparty_visible",
+      "auditor_visible",
+      "operator_private",
+      "grant_public",
+      "compliance_limited",
+    ])
+    .optional(),
+  status: z.enum(["requested", "attested", "anchored", "verified", "disputed", "expired", "revoked"]).optional(),
+  grant_context: z.record(z.string(), z.unknown()).optional(),
+  audit_context: z.record(z.string(), z.unknown()).optional(),
 });
 
 function validateReceipt(receipt: unknown) {
@@ -49,6 +74,8 @@ function validateReceipt(receipt: unknown) {
       has_evidence_hash: true,
       anchored,
       hash_only_payload: true,
+      has_disclosure_profile: Boolean(value.profile),
+      has_redaction_policy: Boolean(value.redaction_policy),
     },
     rule: "Observe state, bound the claim, hash evidence, issue a receipt, verify later.",
     boundary: "ZAP1 verifies the receipt contract. It does not hold keys, scan balances, sign transactions, or broadcast spends.",

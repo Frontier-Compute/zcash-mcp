@@ -23,6 +23,16 @@
       "minLength": 1,
       "maxLength": 64
     },
+    "profile": {
+      "enum": [
+        "public_hash_only",
+        "counterparty_receipt",
+        "auditor_packet",
+        "operator_internal",
+        "grant_proof_packet",
+        "compliance_audit_packet"
+      ]
+    },
     "subject_hash": {
       "$ref": "#/$defs/hex64"
     },
@@ -54,6 +64,51 @@
     "verification_url": {
       "type": "string",
       "format": "uri"
+    },
+    "disclosed_fields": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 64
+      }
+    },
+    "redacted_fields": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 64
+      }
+    },
+    "redaction_policy": {
+      "enum": [
+        "hash_only",
+        "counterparty_visible",
+        "auditor_visible",
+        "operator_private",
+        "grant_public",
+        "compliance_limited"
+      ]
+    },
+    "status": {
+      "enum": [
+        "requested",
+        "attested",
+        "anchored",
+        "verified",
+        "disputed",
+        "expired",
+        "revoked"
+      ]
+    },
+    "grant_context": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "audit_context": {
+      "type": "object",
+      "additionalProperties": true
     }
   },
   "$defs": {

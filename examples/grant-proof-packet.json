@@ -1,0 +1,27 @@
+{
+  "schema_version": "zap1-receipt-v1",
+  "event_type": "LEAD_DEV_CREDIT_MENTION",
+  "profile": "grant_proof_packet",
+  "subject_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "claim_hash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "evidence_hash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "leaf_hash": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+  "merkle_root": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+  "merkle_path": [
+    "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+  ],
+  "anchor_txid": "1111111111111111111111111111111111111111111111111111111111111111",
+  "anchor_height": 3350000,
+  "verification_url": "https://api.frontiercompute.cash/verify/dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+  "grant_context": {
+    "deliverable_id": "demo-deliverable",
+    "public_reference": "https://example.invalid/public-reference",
+    "source_hash": "9999999999999999999999999999999999999999999999999999999999999999"
+  },
+  "disclosed_fields": [
+    "deliverable_id",
+    "public_reference",
+    "source_hash"
+  ],
+  "redaction_policy": "grant_public"
+}

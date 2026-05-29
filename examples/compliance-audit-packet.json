@@ -1,0 +1,31 @@
+{
+  "schema_version": "zap1-receipt-v1",
+  "event_type": "POLICY_ATTESTATION",
+  "profile": "compliance_audit_packet",
+  "subject_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "claim_hash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "evidence_hash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "leaf_hash": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+  "merkle_root": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+  "merkle_path": [
+    "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+  ],
+  "anchor_txid": "1111111111111111111111111111111111111111111111111111111111111111",
+  "anchor_height": 3350000,
+  "verification_url": "https://api.frontiercompute.cash/verify/dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+  "audit_context": {
+    "disclosure_purpose": "limited policy review",
+    "retention_note": "reviewer-defined",
+    "source_hash": "9999999999999999999999999999999999999999999999999999999999999999"
+  },
+  "disclosed_fields": [
+    "disclosure_purpose",
+    "source_hash"
+  ],
+  "redacted_fields": [
+    "raw_private_payload",
+    "counterparty_details",
+    "operator_notes"
+  ],
+  "redaction_policy": "compliance_limited"
+}

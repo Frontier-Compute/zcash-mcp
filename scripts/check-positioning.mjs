@@ -12,6 +12,8 @@ const requiredFiles = [
   "README.md",
   "docs/zap1-proof-rail.md",
   "docs/zap1-conformance.md",
+  "docs/external-rail-receipts.md",
+  "docs/receipt-disclosure-profiles.md",
   ".well-known/mcp.json",
   "server.json",
   "src/tools/capabilities.ts",
@@ -26,6 +28,29 @@ const banned = [
   "ZAP1 owns receipts",
   "owned here",
   "not owned here",
+];
+
+const bannedPatterns = [
+  /\bTEE\b/i,
+  /\benclave\b/i,
+  /\bpermissioned shard\b/i,
+  /\bvalidator-attested\b/i,
+  /\bconfidential by default\b/i,
+  /\bany chain\b/i,
+  /\bHIP-4\b/i,
+  /\bPolymarket\b/i,
+  /\bNEAR Intents\b/i,
+  /\bUniversal Send\b/i,
+  /\bZipher\b/i,
+  /\bAtmosphere Labs\b/i,
+  /\bHyperliquid\b/i,
+  /\bHYPE\b/,
+  /\bKenbak\b/i,
+  /\ba16z\b/i,
+  /\binvestor\b/i,
+  /\bdockstation\b/i,
+  /\bshielded yield\b/i,
+  /\bprivate yield\b/i,
 ];
 
 let failed = false;
@@ -55,12 +80,58 @@ for (const file of requiredFiles) {
       failed = true;
     }
   }
+
+  for (const pattern of bannedPatterns) {
+    if (pattern.test(text)) {
+      console.error(`${file}: banned category-drift pattern found: ${pattern}`);
+      failed = true;
+    }
+  }
 }
 
 const pkg = JSON.parse(fs.readFileSync(path.join(root, "package.json"), "utf8"));
 const indexText = fs.readFileSync(path.join(root, "src/index.ts"), "utf8");
+const readmeText = fs.readFileSync(path.join(root, "README.md"), "utf8");
+const wellKnown = JSON.parse(fs.readFileSync(path.join(root, ".well-known/mcp.json"), "utf8"));
+const serverJson = JSON.parse(fs.readFileSync(path.join(root, "server.json"), "utf8"));
+const gitignoreText = fs.readFileSync(path.join(root, ".gitignore"), "utf8");
+
 if (!indexText.includes(`version: "${pkg.version}"`)) {
   console.error(`src/index.ts: server version must match package.json version ${pkg.version}`);
+  failed = true;
+}
+
+if (wellKnown.version !== pkg.version) {
+  console.error(`.well-known/mcp.json: version must match package.json version ${pkg.version}`);
+  failed = true;
+}
+
+if (serverJson.version !== pkg.version) {
+  console.error(`server.json: version must match package.json version ${pkg.version}`);
+  failed = true;
+}
+
+for (const npmPackage of serverJson.packages ?? []) {
+  if (npmPackage.identifier === pkg.name && npmPackage.version !== pkg.version) {
+    console.error(`server.json: package version for ${pkg.name} must match package.json version ${pkg.version}`);
+    failed = true;
+  }
+}
+
+for (const tool of wellKnown.tools ?? []) {
+  if (!readmeText.includes(`| \`${tool}\` |`)) {
+    console.error(`README.md: missing tool table row for ${tool}`);
+    failed = true;
+  }
+}
+
+if (!indexText.includes(`(${wellKnown.tools.length} tools)`)) {
+  console.error(`src/index.ts: startup tool count must match .well-known/mcp.json (${wellKnown.tools.length})`);
+  failed = true;
+}
+
+if (!gitignoreText.split(/\r?\n/).includes(".npmrc")) {
+  console.error(".gitignore: .npmrc must be ignored");
   failed = true;
 }
 

@@ -16,6 +16,8 @@ const CAPABILITY_MANIFEST = {
     "decode Zcash memo payloads that carry ZAP1 or receipt data",
     "read public chain context needed to interpret ZAP1 anchors",
     "convert wallet-layer action results into hash-only ZAP1 receipt requests",
+    "convert external-rail action evidence into hash-only ZAP1 receipt requests",
+    "validate, extract, compare, and audit ZAP1 receipt packets without calling external rails",
   ],
   market_fit: {
     problem: "Agents can call wallets and services, but they also need receipts that prove what happened after the fact.",
@@ -28,10 +30,12 @@ const CAPABILITY_MANIFEST = {
     composes_with: "wallets, signers, custody systems, lightwalletd stacks, Zaino stacks, and application workflows",
     rejects: [
       "payment URI as proof of payment",
+      "quote or route hash as settlement evidence by itself",
       "pending leaf as anchored finality",
       "custody or seed handling",
       "transaction signing or broadcast",
       "wallet scan state as ZAP1 truth",
+      "claims that ZAP1 operates or guarantees an external rail",
     ],
   },
   receipt_packet: [
@@ -65,6 +69,15 @@ const CAPABILITY_MANIFEST = {
       "zap1_create_receipt_invoice",
       "zap1_watch_receipt_invoice",
       "zap1_wallet_receipt_request",
+      "zap1_attest_external_action",
+    ],
+    receipt_verification: [
+      "zap1_verify_external_receipt",
+      "zap1_extract_proof_artifact",
+      "zap1_check_anchor_freshness_at_height",
+      "zap1_verify_receipt_chain",
+      "zap1_compare_receipt_claims",
+      "zap1_audit_event_log",
     ],
     chain_context: [
       "get_block_height",
@@ -78,6 +91,7 @@ const CAPABILITY_MANIFEST = {
       "proof verification",
       "memo decoding",
       "receipt invoice metadata",
+      "external action receipt requests",
     ],
     out_of_scope: [
       "private key custody",

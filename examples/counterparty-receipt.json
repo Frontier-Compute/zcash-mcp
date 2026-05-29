@@ -1,0 +1,23 @@
+{
+  "schema_version": "zap1-receipt-v1",
+  "event_type": "EXTERNAL_ACTION_RECEIPT",
+  "profile": "counterparty_receipt",
+  "subject_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "claim_hash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "evidence_hash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "leaf_hash": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+  "merkle_root": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+  "merkle_path": [
+    "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+  ],
+  "anchor_txid": "1111111111111111111111111111111111111111111111111111111111111111",
+  "anchor_height": 3350000,
+  "verification_url": "https://api.frontiercompute.cash/verify/dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+  "disclosed_fields": [
+    "event_type",
+    "profile",
+    "anchor_txid",
+    "anchor_height"
+  ],
+  "redaction_policy": "counterparty_visible"
+}

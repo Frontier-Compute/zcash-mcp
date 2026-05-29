@@ -1,7 +1,7 @@
 {
   "name": "@frontiercompute/zcash-mcp",
   "description": "ZAP1 receipts for Zcash agents: verify workflows without trusting the server. Attestation layer, not a wallet.",
-  "version": "1.3.2",
+  "version": "1.4.0",
   "transport": "stdio",
   "tools": [
     "decode_memo",
@@ -23,6 +23,13 @@
     "zcash_conformance_check",
     "zcash_receipt_template",
     "zap1_wallet_receipt_request",
+    "zap1_attest_external_action",
+    "zap1_verify_external_receipt",
+    "zap1_extract_proof_artifact",
+    "zap1_check_anchor_freshness_at_height",
+    "zap1_verify_receipt_chain",
+    "zap1_compare_receipt_claims",
+    "zap1_audit_event_log",
     "zap1_verify_evm"
   ],
   "auth": {
