@@ -1,6 +1,8 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod/v4";
 
+import { readBoundedJsonResponse, readBoundedResponseText } from "./bounded-response.js";
+
 const ZAP1_API = process.env.ZAP1_API_URL ?? "https://api.frontiercompute.cash";
 
 export function registerAttestTool(server: McpServer) {
@@ -80,11 +82,11 @@ export function registerAttestTool(server: McpServer) {
         });
 
         if (!res.ok) {
-          const text = await res.text();
+          const text = await readBoundedResponseText(res);
           throw new Error(`${res.status}: ${text}`);
         }
 
-        const data = await res.json();
+        const data = await readBoundedJsonResponse(res);
         if (expected_leaf_hash) {
           const returnedLeafHash =
             data && typeof data === "object" && "leaf_hash" in data && typeof data.leaf_hash === "string"

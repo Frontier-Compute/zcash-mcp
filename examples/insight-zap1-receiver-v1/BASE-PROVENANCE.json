@@ -6,9 +6,28 @@
     "base_tree": "da2e12163857248c5406d449a754ef897ab77332",
     "base_commit_date": "2026-05-29T11:16:57+07:00",
     "base_subject": "feat: add ZAP1 external receipt verifier tools",
+    "local_hardening_candidate": {
+      "commit": "34c6d63d2ea7f9510aca64945c48e86d9dd134b7",
+      "tree": "9c9e4f61f63a28b9b6dbd921fe520a72a0b15d0a",
+      "subject": "feat: harden Insight ZAP1 reference flow",
+      "publication_state": "LOCAL_ONLY_NOT_DEPLOYED_NOT_PUSHED_BY_THIS_PACKAGE",
+      "upstream_base_commit": "2bb5308d30aac1c5903de786b88045b83b32f27d"
+    },
     "repository_root_relative": "../..",
     "critical_contract_source": "src/tools/external-action.ts",
+    "receipt_v2_verifier_source": "src/tools/receipt-v2-verifier.ts",
+    "receipt_v2_schema": "schemas/zap1-receipt-v2.schema.json",
+    "proof_bundle_v2_schema": "schemas/zap1-proof-bundle-v2.schema.json",
+    "authoritative_write_method_and_path": "POST /event",
     "server_entrypoint_after_build": "dist/index.js"
+  },
+  "zap1_protocol": {
+    "repository": "https://github.com/Frontier-Compute/zap1.git",
+    "compatibility_rechecked_from_commit": "f008b7540944531449ee4a7dd40a7e0eff678d14",
+    "compatibility_rechecked_through_commit": "00979c616d3407b48eee5f6c4ea0591d7fb88a45",
+    "recheck_result": "NO_CHANGE_TO_POST_EVENT_AGENT_ACTION_TYPED_LEAF_PROOF_BUNDLE_OR_COUNT_BOUND_ROOT_CONTRACT",
+    "latest_changes_observed": "anchor QR and deployment monitoring only",
+    "audit_scope": "read-only public source review; no write or deployment"
   },
   "insight": {
     "repository": "https://github.com/imokokok/Insight.git",
@@ -32,9 +51,15 @@
       }
     ],
     "live_registry": "https://www.oracleinsight.xyz/.well-known/oracle-keys.json",
-    "live_sample": "https://www.oracleinsight.xyz/api/v1/safety/attestation/sample",
+    "representative_sample_endpoint": "https://www.oracleinsight.xyz/api/v1/safety/attestation/sample",
+    "sample_provider_observations_provenance": "NOT_ESTABLISHED_BY_THE_SAMPLE_ENDPOINT_RESPONSE",
     "failure_demo": "https://www.oracleinsight.xyz/api/v1/safety/envelope",
-    "registry_unit_metadata_present_at_capture": false
+    "registry_unit_metadata_present_at_capture": false,
+    "hosted_verifier_audit": {
+      "state": "HOSTED_ENDPOINT_NOT_A_TRUST_ROOT",
+      "required_receiver_behavior": "Independently verify the EIP-712 digest and signature against the exact-byte registry SHA and pinned issuer signer.",
+      "local_hardening_state": "SEPARATE_LOCAL_INSIGHT_PATCH_6b0de9bf52b78a8d076e2ad8d2f796220daada92_NOT_INCLUDED_NOT_ESTABLISHED_AS_DEPLOYED"
+    }
   },
   "reopen_triggers": [
     "changed Insight source commit or source blob",
@@ -45,4 +70,3 @@
     "failed manifest or conformance test"
   ]
 }
-

@@ -21,6 +21,16 @@ const mockApi = createServer(async (request, response) => {
     authorization: request.headers.authorization,
     body,
   });
+  if (request.headers.authorization === "Bearer local-oversize-key") {
+    response.writeHead(200, { "Content-Type": "application/json" });
+    response.end(JSON.stringify({ padding: "x".repeat(65 * 1024) }));
+    return;
+  }
+  if (request.headers.authorization === "Bearer local-wrong-type-key") {
+    response.writeHead(200, { "Content-Type": "text/plain" });
+    response.end(JSON.stringify({ leaf_hash: "f".repeat(64) }));
+    return;
+  }
   const leafHash =
     body.event_type === "AGENT_ACTION"
       ? computeAgentActionLeafHex(body.agent_id, body.action_type, body.input_hash, body.output_hash)
@@ -105,6 +115,30 @@ try {
   assert.equal(substitutedLeaf.status, "attest_response_leaf_mismatch");
   assert.equal(requests.length, 2, "substitution test did not produce exactly one additional request");
 
+  const oversizedResponseResult = await client.callTool({
+    name: "attest_event",
+    arguments: {
+      ...wireArgs,
+      expected_leaf_hash: bridge.hashes.expected_leaf_hash,
+      api_key: "local-oversize-key",
+    },
+  });
+  assert(oversizedResponseResult.isError, "oversized ZAP1 response was accepted");
+  assert.match(oversizedResponseResult.content[0].text, /more than 65536 bytes|exceeded 65536 bytes/);
+  assert.equal(requests.length, 3, "oversize test did not produce one request");
+
+  const wrongContentTypeResult = await client.callTool({
+    name: "attest_event",
+    arguments: {
+      ...wireArgs,
+      expected_leaf_hash: bridge.hashes.expected_leaf_hash,
+      api_key: "local-wrong-type-key",
+    },
+  });
+  assert(wrongContentTypeResult.isError, "non-JSON ZAP1 response was accepted");
+  assert.match(wrongContentTypeResult.content[0].text, /unexpected response content type/);
+  assert.equal(requests.length, 4, "content-type test did not produce one request");
+
   const missingAgent = await client.callTool({
     name: "attest_event",
     arguments: {
@@ -116,7 +150,7 @@ try {
     },
   });
   assert(missingAgent.isError, "AGENT_ACTION without agent_id was not rejected locally");
-  assert.equal(requests.length, 2, "invalid AGENT_ACTION reached the API");
+  assert.equal(requests.length, 4, "invalid AGENT_ACTION reached the API");
 
   const missingWallet = await client.callTool({
     name: "attest_event",
@@ -126,7 +160,7 @@ try {
     },
   });
   assert(missingWallet.isError, "non-AGENT_ACTION without wallet_hash was not rejected locally");
-  assert.equal(requests.length, 2, "invalid non-AGENT_ACTION reached the API");
+  assert.equal(requests.length, 4, "invalid non-AGENT_ACTION reached the API");
 
   const identityResult = await client.callTool({
     name: "zcash_identity_register",
@@ -139,10 +173,10 @@ try {
     },
   });
   assert(!identityResult.isError, "complete AGENT_REGISTER did not reach the local mock API");
-  assert.equal(requests.length, 3, "AGENT_REGISTER did not produce exactly one additional request");
-  assert.equal(requests[2].url, "/event");
-  assert.equal(requests[2].authorization, "Bearer local-mock-key");
-  assert.deepEqual(requests[2].body, {
+  assert.equal(requests.length, 5, "AGENT_REGISTER did not produce exactly one additional request");
+  assert.equal(requests[4].url, "/event");
+  assert.equal(requests[4].authorization, "Bearer local-mock-key");
+  assert.deepEqual(requests[4].body, {
     event_type: "AGENT_REGISTER",
     wallet_hash: "agent_001",
     agent_id: "agent_001",
@@ -151,7 +185,9 @@ try {
     policy_hash: "3".repeat(64),
   });
 
-  console.log("event contract: AGENT_ACTION/AGENT_REGISTER mock POST and fail-closed guards passed");
+  console.log(
+    "event contract: AGENT_ACTION/AGENT_REGISTER mock POST, bounded responses, and fail-closed guards passed"
+  );
 } finally {
   await transport.close().catch(() => {});
   await new Promise((resolve) => mockApi.close(resolve));

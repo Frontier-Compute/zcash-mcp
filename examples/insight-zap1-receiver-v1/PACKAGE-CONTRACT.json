@@ -15,18 +15,27 @@
   },
   "network": {
     "dependency_install": "npm registry access may be required",
-    "test_execution": "offline",
-    "hosted_verdict_trusted": false
+    "test_execution": "offline except for an in-process 127.0.0.1 mock",
+    "live_external_write": false,
+    "hosted_verdict_trusted": false,
+    "hosted_verifier_security_state": "OUTSIDE_RECEIVER_TRUST_ROOT; LOCAL_ISSUER_HARDENING_NOT_ESTABLISHED_AS_DEPLOYED"
   },
-  "claim": "A frozen Insight OracleSafetyCheck v2 receipt was independently valid for a separately supplied action instance at the recorded check time, and its deterministic hashes satisfy the included public ZAP1 MCP request contract.",
-  "terminal_state": "RECEIPT_REQUEST_BUILT_NOT_ATTESTED_NOT_ANCHORED",
+  "claim": "A frozen, issuer-key-signed representative Insight OracleSafetyCheck v2 demo receipt was independently valid for a separately supplied action instance at the recorded check time, and its deterministic hashes satisfy the included ZAP1 receiver contract. The fixture does not establish live provider-observation provenance.",
+  "terminal_state": "ATOMIC_RECEIVER_BINDING_LOCAL_POST_EVENT_AND_RECEIPT_V2_CONFORMANCE_PASS_NO_LIVE_WRITE_NOT_ANCHORED",
+  "security_contract": {
+    "independent_eip712_verification": true,
+    "trust_root_runtime_override": false,
+    "exact_registry_raw_sha256_pin": "9e7bc705e32280d4997c3ed3d27b5c8794c80198d2eaeaa3310893e939a7deae",
+    "atomic_replay_guard_required": true,
+    "receipt_and_registry_limit_bytes": 131072,
+    "zap1_response_limit_bytes": 65536
+  },
   "non_authorizations": [
     "no trade or payment authorization",
-    "no attest_event call",
-    "no Merkle inclusion or proof creation",
+    "no live POST /event or production attest_event call; localhost contract mock only",
+    "no deployed Merkle inclusion or production proof creation",
     "no Zcash anchor creation or verification",
     "no wallet, signer, key, node, provider, or deployment action",
     "no partnership, adoption, endorsement, revenue, or payment claim"
   ]
 }
-

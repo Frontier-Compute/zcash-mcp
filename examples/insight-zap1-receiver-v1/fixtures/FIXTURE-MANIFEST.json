@@ -2,16 +2,20 @@
   "schema": "frontier-compute.insight-receiver-fixtures.v1",
   "registry": {
     "file": "registry-20260821.json",
+    "exact_body_transport_file": "registry-20260821.body.b64",
     "label": "LIVE_REGISTRY_SNAPSHOT",
     "source": "https://www.oracleinsight.xyz/.well-known/oracle-keys.json",
     "source_body_sha256": "9e7bc705e32280d4997c3ed3d27b5c8794c80198d2eaeaa3310893e939a7deae",
+    "hash_semantics": "SHA-256 over exact decoded response bytes; no line-ending or whitespace normalization",
     "captured_date": "2026-08-21"
   },
   "vectors": [
     {
       "file": "oracle-safety-valid-20260821.json",
-      "label": "VALID_LIVE_SNAPSHOT",
+      "label": "FRESHLY_SIGNED_REPRESENTATIVE_DEMO_SNAPSHOT",
       "source": "https://www.oracleinsight.xyz/api/v1/safety/attestation/sample",
+      "classification": "ISSUER_KEY_SIGNED_REPRESENTATIVE_DEMO_NOT_LIVE_PROVIDER_OBSERVATIONS",
+      "provider_observations_provenance": "NOT_ESTABLISHED_BY_THIS_FIXTURE",
       "receipt_uid": "0xfcaec17837d8046c13efa7be432e93b8cde0eeb2dc88e521f73d783c3d7f171d",
       "receipt_signed_at": "2026-08-21T10:00:09.275Z",
       "historical_verification_time_seconds": 1787306410,
@@ -42,5 +46,5 @@
       "production_incident": false
     }
   ],
-  "warning": "Frozen receipts are historical conformance evidence. They are never fresh authorization for a current trade."
+  "warning": "Frozen receipts are historical conformance evidence. The passing sample is a freshly issuer-signed representative demo, not proof of live provider observations, and no fixture is fresh authorization for a current trade."
 }

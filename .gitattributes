@@ -1,0 +1,7 @@
+/.gitattributes text eol=lf
+/examples/insight-zap1-receiver-v1/** text eol=lf
+/src/** text eol=lf
+/schemas/** text eol=lf
+/package.json text eol=lf
+/package-lock.json text eol=lf
+/tsconfig.json text eol=lf

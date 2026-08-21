@@ -1,0 +1,35 @@
+{
+  "schema": "frontier-compute.zap1-deployed-proof-shape.v1",
+  "classification": "LIVE_DEPLOYED_SHAPE_ONLY",
+  "captured_date": "2026-08-21",
+  "source_url": "https://api.frontiercompute.cash/verify/eee69b3526d1771dbe86cd1a9bdec47654523b5a94eeaf78ecf1bb9e1a9363f3/proof.json",
+  "source_body_utf8_bytes": 1443,
+  "source_body_sha256": "79ddc37c89868ba15d3154ce3cc97b765bb94c294f099477941053e0213c4340",
+  "source_body_included": false,
+  "observed": {
+    "protocol": "ZAP1",
+    "version": "2",
+    "event_type": "AGENT_ACTION",
+    "leaf_preimage_disclosure": "withheld from the public proof bundle",
+    "leaf_event_type_authentication": "unverified_server_metadata_without_disclosed_witness",
+    "proof_positions": ["left", "right"],
+    "root_leaf_count": 477,
+    "root_scheme": "ZAP1_COUNT_BOUND_V2",
+    "root_legacy_allowed": false,
+    "root_legacy_max_anchor_height": 3317133,
+    "anchor_txid": null,
+    "anchor_height": null
+  },
+  "routing_probe": {
+    "GET /attest": 404,
+    "GET /event": 405,
+    "authoritative_write_method_and_path": "POST /event"
+  },
+  "receiver_rule": "Retain the independently generated AGENT_ACTION witness, assemble it with the deployed proof, and omit anchor entirely when both txid and height are null.",
+  "non_authorizations": [
+    "not an Insight semantic vector",
+    "not proof that the public leaf belongs to the Insight action instance",
+    "not Zcash anchor confirmation",
+    "not authority to POST /event"
+  ]
+}
