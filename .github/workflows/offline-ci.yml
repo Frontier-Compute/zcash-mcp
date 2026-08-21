@@ -25,3 +25,6 @@ jobs:
 
       - name: Run offline verification
         run: npm run test:offline
+
+      - name: Run Insight receiver verification
+        run: npm run test:insight-receiver
