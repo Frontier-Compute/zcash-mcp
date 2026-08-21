@@ -1,0 +1,112 @@
+{
+  "schema": "frontier-compute.insight-zap1-source-manifest.v1",
+  "hash_algorithm": "sha256",
+  "scope": "all receiver package files plus executable base MCP contract, root dependency lock, and build configuration",
+  "repository_root_relative": "../..",
+  "package_files_complete": true,
+  "excluded_from_self_hash": [
+    "examples/insight-zap1-receiver-v1/SOURCE-MANIFEST.json"
+  ],
+  "files": [
+    {
+      "path": "examples/insight-zap1-receiver-v1/ACTION-INSTANCE.json",
+      "role": "independent intended-action input",
+      "sha256": "7414dbb225f043d920f63978dbedee59f2344718578c22e106bfe57aa571decb"
+    },
+    {
+      "path": "examples/insight-zap1-receiver-v1/adapter.mjs",
+      "role": "native verifier and deterministic ZAP1 binding",
+      "sha256": "9f5a17579d92252a072c5ce6b01741bd22d8b9b548d55a8af55e7431b028edc3"
+    },
+    {
+      "path": "examples/insight-zap1-receiver-v1/BASE-PROVENANCE.json",
+      "role": "resolvable base and issuer-source provenance",
+      "sha256": "e2c60a40bbcab9a165c89c13afca55e2faedf91cc3d7e04d421acf6849a5dbb1"
+    },
+    {
+      "path": "examples/insight-zap1-receiver-v1/fixtures/FIXTURE-MANIFEST.json",
+      "role": "frozen vector labels and expectations",
+      "sha256": "3b70e4281e4c3c7b34b9f0098fb279ca1e6397fac9ee330b049e03534bf0d0be"
+    },
+    {
+      "path": "examples/insight-zap1-receiver-v1/fixtures/oracle-safety-expired-demo-20260821.json",
+      "role": "deliberate expired failure demo",
+      "sha256": "0cce8fac61000dc16137c6e05bbef91339fde63874cec5ad004c4e035e2690db"
+    },
+    {
+      "path": "examples/insight-zap1-receiver-v1/fixtures/oracle-safety-tampered-demo-20260821.json",
+      "role": "deliberate tampered failure demo",
+      "sha256": "30153714a57f76affbc34ce7862002bbedc26ff9a59ceecc32f828e7f4155f4c"
+    },
+    {
+      "path": "examples/insight-zap1-receiver-v1/fixtures/oracle-safety-valid-20260821.json",
+      "role": "frozen production-key live sample",
+      "sha256": "dfab10decb6296e630ceba4834a0efe8fd4e84657fd4688d8f12632aa8fef991"
+    },
+    {
+      "path": "examples/insight-zap1-receiver-v1/fixtures/registry-20260821.json",
+      "role": "frozen live key and schema registry",
+      "sha256": "96a2423d0f7795a619742f58bf580ed204c46f0bfbffd676902fc0a577499a45"
+    },
+    {
+      "path": "examples/insight-zap1-receiver-v1/PACKAGE-CONTRACT.json",
+      "role": "runtime, layout, claim, and non-authorization contract",
+      "sha256": "b02aebddaac0d6edb32da349b20101542601b3399cdf1b1569665b6e093888dc"
+    },
+    {
+      "path": "examples/insight-zap1-receiver-v1/README.md",
+      "role": "receiver runbook",
+      "sha256": "38c198205ba3514b0319cfbfb20f4fcc8d62166d9d837a4887ab4655a053bd98"
+    },
+    {
+      "path": "examples/insight-zap1-receiver-v1/test-frozen.mjs",
+      "role": "frozen corpus, action, units, replay, and expiry tests",
+      "sha256": "a0480c50e03e75c9d5718ab148a59948bc050b96ec9c54199d60594998fa625a"
+    },
+    {
+      "path": "examples/insight-zap1-receiver-v1/test-mcp.mjs",
+      "role": "real stdio MCP contract test",
+      "sha256": "2e6845cb73e8b88f409d79f05b74f6e7a51bd6e1062392373de08d96783d26d7"
+    },
+    {
+      "path": "examples/insight-zap1-receiver-v1/test-package.mjs",
+      "role": "single receiver test entrypoint",
+      "sha256": "fd57e16ac6564f15c59f0f9c9e0c991545ab5514579d98190a0971fe82c65574"
+    },
+    {
+      "path": "examples/insight-zap1-receiver-v1/UNIT-CONTRACT.json",
+      "role": "fixed-point semantic contract",
+      "sha256": "9483fe9481101b4b375cc6d02daf47d0e17e6081ff57979fc5109c041b261aef"
+    },
+    {
+      "path": "examples/insight-zap1-receiver-v1/verify-source-manifest.mjs",
+      "role": "manifest and package-closure verifier",
+      "sha256": "1d6cbfa740d5e40891a4af214c5142723f09d2df61d6e9ef42d046548e2c09e9"
+    },
+    {
+      "path": "package.json",
+      "role": "root scripts, runtime, and dependencies",
+      "sha256": "00ea89886b8c2a7745a3aa8f9e30327d02397c1a4438f09bd24441b3e6df0325"
+    },
+    {
+      "path": "package-lock.json",
+      "role": "exact npm dependency resolution",
+      "sha256": "fe297fe78c84f549802114684b6ed9295bc2d3efb9058cff25026fa28ce1e020"
+    },
+    {
+      "path": "src/index.ts",
+      "role": "included MCP server entrypoint source",
+      "sha256": "c0ac5b3f32279f36a08935805c675c469198c099e2d78a287c940e3271e0d900"
+    },
+    {
+      "path": "src/tools/external-action.ts",
+      "role": "included public ZAP1 external-action contract source",
+      "sha256": "5ccd63bdc07a5fbcef7e2c4ce745a0e653ec85cda8e979d0a7b160e6bfafae3a"
+    },
+    {
+      "path": "tsconfig.json",
+      "role": "deterministic TypeScript build configuration",
+      "sha256": "d7682014cf8a172889cbac5723e0f193c4a1a466ff492cae1a6e535f795ce8d4"
+    }
+  ]
+}

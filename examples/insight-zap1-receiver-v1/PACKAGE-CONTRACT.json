@@ -1,0 +1,32 @@
+{
+  "schema": "frontier-compute.insight-zap1-receiver-package.v1",
+  "package_version": "0.1.0",
+  "runtime": {
+    "node": ">=20",
+    "package_manager": "npm",
+    "install_command": "npm ci --ignore-scripts",
+    "test_command": "npm run test:insight-receiver"
+  },
+  "layout": {
+    "package_directory": "examples/insight-zap1-receiver-v1",
+    "repository_root_relative": "../..",
+    "requires_undeclared_parent_checkout": false,
+    "archive_scope": "complete_repository_tree"
+  },
+  "network": {
+    "dependency_install": "npm registry access may be required",
+    "test_execution": "offline",
+    "hosted_verdict_trusted": false
+  },
+  "claim": "A frozen Insight OracleSafetyCheck v2 receipt was independently valid for a separately supplied action instance at the recorded check time, and its deterministic hashes satisfy the included public ZAP1 MCP request contract.",
+  "terminal_state": "RECEIPT_REQUEST_BUILT_NOT_ATTESTED_NOT_ANCHORED",
+  "non_authorizations": [
+    "no trade or payment authorization",
+    "no attest_event call",
+    "no Merkle inclusion or proof creation",
+    "no Zcash anchor creation or verification",
+    "no wallet, signer, key, node, provider, or deployment action",
+    "no partnership, adoption, endorsement, revenue, or payment claim"
+  ]
+}
+

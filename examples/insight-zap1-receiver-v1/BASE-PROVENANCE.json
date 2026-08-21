@@ -1,0 +1,48 @@
+{
+  "schema": "frontier-compute.insight-zap1-base-provenance.v1",
+  "zcash_mcp": {
+    "repository": "https://github.com/Frontier-Compute/zcash-mcp.git",
+    "base_commit": "2bb5308d30aac1c5903de786b88045b83b32f27d",
+    "base_tree": "da2e12163857248c5406d449a754ef897ab77332",
+    "base_commit_date": "2026-05-29T11:16:57+07:00",
+    "base_subject": "feat: add ZAP1 external receipt verifier tools",
+    "repository_root_relative": "../..",
+    "critical_contract_source": "src/tools/external-action.ts",
+    "server_entrypoint_after_build": "dist/index.js"
+  },
+  "insight": {
+    "repository": "https://github.com/imokokok/Insight.git",
+    "source_commit": "8f84ecaa83f587b1b4a797926e1a509077c5f2f9",
+    "source_commit_observed_utc": "2026-08-21T09:58:00Z",
+    "source_blobs": [
+      {
+        "path": "src/lib/attestations/oracleSafetyAttestationV2.ts",
+        "git_blob": "d02f310b1d7773aebd9f6b2cae6e629dd8ca24bd",
+        "role": "v2 schema and fixed-point scales"
+      },
+      {
+        "path": "src/lib/attestations/canonicalRequestHash.ts",
+        "git_blob": "7b8280100881d7fc30dd01a24ee4e1dc429d5297",
+        "role": "canonical action request and USD 1e6 scale"
+      },
+      {
+        "path": "src/lib/attestations/sampleOracleSafetyInput.ts",
+        "git_blob": "44a9eaa8ac42637e70d94ed0336678f97b4428b0",
+        "role": "representative ETH/USDC input and price interpretation"
+      }
+    ],
+    "live_registry": "https://www.oracleinsight.xyz/.well-known/oracle-keys.json",
+    "live_sample": "https://www.oracleinsight.xyz/api/v1/safety/attestation/sample",
+    "failure_demo": "https://www.oracleinsight.xyz/api/v1/safety/envelope",
+    "registry_unit_metadata_present_at_capture": false
+  },
+  "reopen_triggers": [
+    "changed Insight source commit or source blob",
+    "changed registry, signer key, EIP-712 domain, ordered types, or receipt bytes",
+    "changed fixed-point scale or issuer clarification",
+    "changed action instance, receiver identity, nonce, verifier policy, or ZAP1 contract source",
+    "changed proof topology or anchor policy",
+    "failed manifest or conformance test"
+  ]
+}
+

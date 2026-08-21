@@ -1,0 +1,46 @@
+{
+  "schema": "frontier-compute.insight-receiver-fixtures.v1",
+  "registry": {
+    "file": "registry-20260821.json",
+    "label": "LIVE_REGISTRY_SNAPSHOT",
+    "source": "https://www.oracleinsight.xyz/.well-known/oracle-keys.json",
+    "source_body_sha256": "9e7bc705e32280d4997c3ed3d27b5c8794c80198d2eaeaa3310893e939a7deae",
+    "captured_date": "2026-08-21"
+  },
+  "vectors": [
+    {
+      "file": "oracle-safety-valid-20260821.json",
+      "label": "VALID_LIVE_SNAPSHOT",
+      "source": "https://www.oracleinsight.xyz/api/v1/safety/attestation/sample",
+      "receipt_uid": "0xfcaec17837d8046c13efa7be432e93b8cde0eeb2dc88e521f73d783c3d7f171d",
+      "receipt_signed_at": "2026-08-21T10:00:09.275Z",
+      "historical_verification_time_seconds": 1787306410,
+      "expected_historical_result": "PASS",
+      "expected_current_result_after_valid_until": "REJECTED_EXPIRED",
+      "production_incident": false
+    },
+    {
+      "file": "oracle-safety-tampered-demo-20260821.json",
+      "receipt_path": "receipt",
+      "label": "DELIBERATE_FAILURE_DEMO_TAMPERED",
+      "source": "https://www.oracleinsight.xyz/api/v1/safety/envelope?demo=tampered",
+      "receipt_uid": "0x72af2babbd68415a48edfb1393140234497cac1003214d255ba922785feae8f9",
+      "verification_time_seconds": 1787306418,
+      "expected_result": "REJECTED",
+      "expected_failure_codes": ["uid_mismatch", "signature_signer_mismatch", "verdict_not_allowed"],
+      "production_incident": false
+    },
+    {
+      "file": "oracle-safety-expired-demo-20260821.json",
+      "receipt_path": "receipt",
+      "label": "DELIBERATE_FAILURE_DEMO_EXPIRED",
+      "source": "https://www.oracleinsight.xyz/api/v1/safety/envelope?demo=expired",
+      "receipt_uid": "0x025b070bf95ec5bbf087515216f87bdbd4f69cbac0823921c8ce7d97c383ba9a",
+      "verification_time_seconds": 1787306424,
+      "expected_result": "REJECTED",
+      "expected_failure_codes": ["receipt_expired", "receipt_too_old"],
+      "production_incident": false
+    }
+  ],
+  "warning": "Frozen receipts are historical conformance evidence. They are never fresh authorization for a current trade."
+}
