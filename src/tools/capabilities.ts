@@ -73,6 +73,7 @@ const CAPABILITY_MANIFEST = {
     ],
     receipt_verification: [
       "zap1_verify_external_receipt",
+      "zap1_verify_receipt_v2",
       "zap1_extract_proof_artifact",
       "zap1_check_anchor_freshness_at_height",
       "zap1_verify_receipt_chain",

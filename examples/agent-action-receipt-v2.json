@@ -1,0 +1,36 @@
+{
+  "schema_version": "zap1-receipt-v2",
+  "event_type": "AGENT_ACTION",
+  "profile": "public_hash_only",
+  "subject_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "claim_hash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "evidence_hash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "leaf": {
+    "hash": "0c3035ffe24cea43bed1384d2788e155c1516d9e5cd0f8e777879713e35014be",
+    "event_type": "AGENT_ACTION",
+    "agent_id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "action_type": "price_integrity_receipt_verified",
+    "input_hash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "output_hash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+  },
+  "proof": [
+    {
+      "hash": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "position": "right"
+    }
+  ],
+  "root": {
+    "hash": "7a9bd7c0dcd7ca5feb01904fd4d5768b4bd6a34ec64e8f5e5432f417fa31ced0",
+    "leaf_count": 2,
+    "scheme": "ZAP1_COUNT_BOUND_V2"
+  },
+  "status": "verification_completed",
+  "disclosed_fields": [
+    "event_type",
+    "action_type",
+    "subject_hash",
+    "claim_hash",
+    "evidence_hash"
+  ],
+  "redaction_policy": "hash_only"
+}

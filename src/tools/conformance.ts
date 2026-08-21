@@ -41,7 +41,7 @@ const ReceiptSchema = z.object({
   status: z.enum(["requested", "attested", "anchored", "verified", "disputed", "expired", "revoked"]).optional(),
   grant_context: z.record(z.string(), z.unknown()).optional(),
   audit_context: z.record(z.string(), z.unknown()).optional(),
-});
+}).strict();
 
 function validateReceipt(receipt: unknown) {
   const parsed = ReceiptSchema.safeParse(receipt);
@@ -60,11 +60,13 @@ function validateReceipt(receipt: unknown) {
   }
 
   const value = parsed.data;
-  const anchored = Boolean(value.anchor_txid || value.anchor_height !== undefined);
+  const anchorReferencePresent = Boolean(value.anchor_txid || value.anchor_height !== undefined);
 
   return {
-    valid: true,
-    status: anchored ? "anchored" : "pending",
+    valid: false,
+    schema_valid: true,
+    status: "unverified_v1_shape",
+    claimed_status: value.status ?? null,
     schema_version: SCHEMA_VERSION,
     receipt: value,
     acceptance_checks: {
@@ -72,30 +74,37 @@ function validateReceipt(receipt: unknown) {
       has_merkle_root: true,
       has_claim_hash: true,
       has_evidence_hash: true,
-      anchored,
-      hash_only_payload: true,
+      cryptographic_inclusion_valid: false,
+      anchor_reference_present: anchorReferencePresent,
+      anchor_confirmed: false,
+      acceptance_ready: false,
+      hash_only_payload: value.redaction_policy === "hash_only",
       has_disclosure_profile: Boolean(value.profile),
       has_redaction_policy: Boolean(value.redaction_policy),
     },
     rule: "Observe state, bound the claim, hash evidence, issue a receipt, verify later.",
-    boundary: "ZAP1 verifies the receipt contract. It does not hold keys, scan balances, sign transactions, or broadcast spends.",
+    boundary: "V1 conformance is shape-only because sibling positions and leaf_count are absent. Use zap1_verify_receipt_v2 for cryptographic inclusion and verify anchors separately.",
   };
 }
 
 export function registerConformanceTool(server: McpServer) {
   server.tool(
     "zcash_conformance_check",
-    "Validate a ZAP1 receipt packet against the frozen v1 receipt contract. Returns malformed, pending, or anchored.",
+    "Validate only the shape of a frozen v1 receipt packet. V1 cannot prove Merkle inclusion or anchor confirmation.",
     {
       receipt: z.unknown().describe("ZAP1 receipt packet to validate."),
     },
-    async ({ receipt }) => ({
-      content: [
-        {
-          type: "text" as const,
-          text: JSON.stringify(validateReceipt(receipt), null, 2),
-        },
-      ],
-    })
+    async ({ receipt }) => {
+      const result = validateReceipt(receipt);
+      return {
+        content: [
+          {
+            type: "text" as const,
+            text: JSON.stringify(result, null, 2),
+          },
+        ],
+        isError: true,
+      };
+    }
   );
 }

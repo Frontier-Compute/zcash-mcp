@@ -128,7 +128,8 @@ Acceptance checks:
 
 - the receipt has a leaf hash
 - the leaf verifies under a returned Merkle root
-- anchored receipts include an anchor transaction or anchor height
+- v2 receipts retain every sibling position and the committed `leaf_count`
+- anchor finality comes from a separately verified root-opening artifact, not txid, height, or status metadata alone
 - another verifier can repeat verification without trusting the original agent
 - no private keys, seeds, PCZTs, or wallet scan state were sent to this server
 
@@ -149,14 +150,15 @@ route, payment, bridge, exchange, or settlement system referenced by a receipt.
 | Tool | What it does |
 |------|-------------|
 | `zcash_capability_manifest` | Machine-readable scope map for agent use: covered surfaces, excluded wallet functions, and composition rules |
-| `zcash_conformance_check` | Validate a ZAP1 receipt packet against the frozen v1 receipt contract |
+| `zcash_conformance_check` | Validate only the shape of a frozen v1 receipt packet; v1 cannot prove inclusion or anchor confirmation |
 | `zcash_receipt_template` | Customer-ready receipt workflow for agent actions, payment receipts, operator lifecycle events, and policy attestations |
 | `zap1_wallet_receipt_request` | Convert a wallet-layer action result into hash-only ZAP1 receipt request fields |
-| `zap1_attest_external_action` | Build a ZAP1 receipt request for an action executed by an external rail without routing, signing, custody, or settlement |
-| `zap1_verify_external_receipt` | Validate an external-action ZAP1 receipt packet without trusting or calling the external rail |
+| `zap1_attest_external_action` | Map bounded external verification evidence into the supported ZAP1 `AGENT_ACTION` write contract and precompute the expected typed leaf |
+| `zap1_verify_external_receipt` | Validate legacy v1 external-receipt shape without claiming cryptographic inclusion or anchor confirmation |
+| `zap1_verify_receipt_v2` | Verify the official proof-bundle-v2 plus retained `AGENT_ACTION` witness, or an integration receipt-v2; anchor confirmation remains separate |
 | `zap1_extract_proof_artifact` | Extract the portable proof artifact from a ZAP1 receipt |
-| `zap1_check_anchor_freshness_at_height` | Check anchor confirmation depth from supplied Zcash heights |
-| `zap1_verify_receipt_chain` | Validate a sequence of ZAP1 receipt packets and summarize anchor state |
+| `zap1_check_anchor_freshness_at_height` | Compute depth arithmetic from supplied heights without claiming chain confirmation |
+| `zap1_verify_receipt_chain` | Validate legacy v1 receipt-sequence shape without claiming proof or anchor validity |
 | `zap1_compare_receipt_claims` | Compare two ZAP1 receipts for claim, evidence, event, and anchor divergence |
 | `zap1_audit_event_log` | Replay a receipt sequence against a caller-supplied event-type policy |
 | `attest_event` | Create a typed ZAP1 attestation leaf for later anchoring |

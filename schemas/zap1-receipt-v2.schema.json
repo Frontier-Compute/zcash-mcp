@@ -1,0 +1,100 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://frontiercompute.cash/schemas/zap1-receipt-v2.schema.json",
+  "title": "Integration-bound ZAP1 AGENT_ACTION Receipt v2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "event_type",
+    "subject_hash",
+    "claim_hash",
+    "evidence_hash",
+    "leaf",
+    "proof",
+    "root"
+  ],
+  "properties": {
+    "schema_version": { "const": "zap1-receipt-v2" },
+    "event_type": { "const": "AGENT_ACTION" },
+    "profile": {
+      "enum": [
+        "public_hash_only",
+        "counterparty_receipt",
+        "auditor_packet",
+        "operator_internal",
+        "grant_proof_packet",
+        "compliance_audit_packet"
+      ]
+    },
+    "subject_hash": { "$ref": "#/$defs/hash" },
+    "claim_hash": { "$ref": "#/$defs/hash" },
+    "evidence_hash": { "$ref": "#/$defs/hash" },
+    "leaf": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["hash", "event_type", "agent_id", "action_type", "input_hash", "output_hash"],
+      "properties": {
+        "hash": { "$ref": "#/$defs/hash" },
+        "event_type": { "const": "AGENT_ACTION" },
+        "agent_id": { "$ref": "#/$defs/hash" },
+        "action_type": { "type": "string", "minLength": 1, "maxLength": 64 },
+        "input_hash": { "$ref": "#/$defs/hash" },
+        "output_hash": { "$ref": "#/$defs/hash" }
+      }
+    },
+    "proof": {
+      "type": "array",
+      "maxItems": 64,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["hash", "position"],
+        "properties": {
+          "hash": { "$ref": "#/$defs/hash" },
+          "position": { "enum": ["left", "right"] }
+        }
+      }
+    },
+    "root": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["hash", "leaf_count", "scheme"],
+      "properties": {
+        "hash": { "$ref": "#/$defs/hash" },
+        "leaf_count": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 },
+        "scheme": { "const": "ZAP1_COUNT_BOUND_V2" }
+      }
+    },
+    "anchor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["txid", "height"],
+      "properties": {
+        "txid": { "$ref": "#/$defs/hash" },
+        "height": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "status": { "type": "string", "minLength": 1, "maxLength": 64 },
+    "disclosed_fields": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1, "maxLength": 64 }
+    },
+    "redaction_policy": {
+      "enum": [
+        "hash_only",
+        "counterparty_visible",
+        "auditor_visible",
+        "operator_private",
+        "grant_public",
+        "compliance_limited"
+      ]
+    }
+  },
+  "$defs": {
+    "hash": {
+      "type": "string",
+      "pattern": "^[0-9a-fA-F]{64}$"
+    }
+  }
+}
