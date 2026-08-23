@@ -21,6 +21,7 @@ export const EXPECTED_TOOL_NAMES = [
   "zap1_prove_receipt",
   "zcash_reputation_score",
   "zap1_verify_external_receipt",
+  "zap1_verify_receipt_v2",
   "zap1_verify_receipt_chain",
   "zap1_wallet_receipt_request",
   "zap1_watch_receipt_invoice",

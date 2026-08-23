@@ -50,14 +50,15 @@ const ReceiptSchema = z.object({
   redacted_fields: z.array(z.string().min(1).max(64)).optional(),
   redaction_policy: redactionPolicy.optional(),
   status: receiptStatus.optional(),
-});
+}).strict();
 
 type Receipt = z.infer<typeof ReceiptSchema>;
 type ReceiptValidation =
   | {
       valid: true;
-      status: z.infer<typeof receiptStatus>;
-      anchored: boolean;
+      status: "shape_only";
+      claimedStatus: z.infer<typeof receiptStatus> | null;
+      anchorReferencePresent: boolean;
       receipt: Receipt;
       warnings: string[];
     }
@@ -82,16 +83,19 @@ function validateReceipt(receipt: unknown): ReceiptValidation {
   }
 
   const value = parsed.data;
-  const anchored = Boolean(value.anchor_txid || value.anchor_height !== undefined);
-  const status = value.status ?? (anchored ? "anchored" : "attested");
+  const anchorReferencePresent = Boolean(value.anchor_txid || value.anchor_height !== undefined);
 
   return {
     valid: true,
-    status,
-    anchored,
+    status: "shape_only",
+    claimedStatus: value.status ?? null,
+    anchorReferencePresent,
     receipt: value,
     warnings: [
-      ...(anchored ? [] : ["receipt is not anchored; treat as pending evidence"]),
+      "zap1-receipt-v1 has no sibling positions or leaf_count, so this tool cannot recompute Merkle inclusion.",
+      ...(anchorReferencePresent
+        ? ["anchor txid/height are unverified references, not chain confirmation"]
+        : ["receipt has no anchor reference"]),
       ...(value.profile ? [] : ["receipt has no disclosure profile"]),
       ...(value.redaction_policy ? [] : ["receipt has no redaction_policy"]),
     ],
@@ -107,6 +111,9 @@ function proofArtifact(receipt: Receipt) {
     schema_version: receipt.schema_version,
     event_type: receipt.event_type,
     profile: receipt.profile ?? null,
+    subject_hash: receipt.subject_hash,
+    claim_hash: receipt.claim_hash,
+    evidence_hash: receipt.evidence_hash,
     leaf_hash: receipt.leaf_hash,
     merkle_root: receipt.merkle_root,
     merkle_path: receipt.merkle_path,
@@ -150,9 +157,14 @@ export function registerReceiptVerifierTools(server: McpServer) {
             type: "text" as const,
             text: JSON.stringify(
               {
-                valid: mismatches.length === 0,
-                status: validation.status,
-                anchored: validation.anchored,
+                valid: false,
+                schema_valid: true,
+                status: "unverified_v1_shape",
+                claimed_status: validation.claimedStatus,
+                cryptographic_inclusion_valid: false,
+                anchor_reference_present: validation.anchorReferencePresent,
+                anchor_confirmed: false,
+                acceptance_ready: false,
                 profile: value.profile ?? null,
                 acceptance_checks: {
                   has_leaf_hash: true,
@@ -160,21 +172,22 @@ export function registerReceiptVerifierTools(server: McpServer) {
                   has_merkle_path: true,
                   has_claim_hash: true,
                   has_evidence_hash: true,
-                  anchored: validation.anchored,
-                  hash_only_payload: true,
+                  anchor_reference_present: validation.anchorReferencePresent,
+                  anchor_confirmed: false,
+                  hash_only_payload: value.redaction_policy === "hash_only",
                   external_rail_not_called: true,
                 },
                 mismatches,
                 warnings: validation.warnings,
                 boundary:
-                  "ZAP1 verifies the receipt packet. It does not audit, operate, or guarantee the external rail referenced by the receipt.",
+                  "This legacy tool validates v1 packet shape only. Use zap1_verify_receipt_v2 to recompute a positioned, count-bound proof; verify any Zcash anchor separately.",
               },
               null,
               2
             ),
           },
         ],
-        isError: mismatches.length > 0,
+        isError: true,
       };
     }
   );
@@ -225,7 +238,7 @@ export function registerReceiptVerifierTools(server: McpServer) {
     },
     async ({ anchor_height, current_height, min_confirmations }) => {
       const confirmations = current_height >= anchor_height ? current_height - anchor_height + 1 : 0;
-      const fresh = confirmations >= min_confirmations;
+      const heightArithmeticSufficient = confirmations >= min_confirmations;
 
       return {
         content: [
@@ -233,14 +246,16 @@ export function registerReceiptVerifierTools(server: McpServer) {
             type: "text" as const,
             text: JSON.stringify(
               {
-                fresh,
+                fresh: false,
+                height_arithmetic_sufficient: heightArithmeticSufficient,
+                anchor_confirmed: false,
                 anchor_height,
                 current_height,
                 confirmations,
                 min_confirmations,
-                status: fresh ? "sufficient_depth" : "insufficient_depth",
+                status: heightArithmeticSufficient ? "unverified_height_sufficient" : "unverified_height_insufficient",
                 boundary:
-                  "Freshness is computed from supplied heights. Verify current_height with your chosen Zcash node or explorer before relying on it.",
+                  "This is arithmetic over caller-supplied heights only. It cannot confirm the txid, root commitment, block, or canonical-chain membership.",
               },
               null,
               2
@@ -262,9 +277,11 @@ export function registerReceiptVerifierTools(server: McpServer) {
         const validation = validateReceipt(receipt);
         return {
           index,
-          valid: validation.valid,
+          valid: false,
+          schema_valid: validation.valid,
           status: validation.valid ? validation.status : "malformed",
-          anchored: validation.valid ? validation.anchored : false,
+          anchor_reference_present: validation.valid ? validation.anchorReferencePresent : false,
+          anchor_confirmed: false,
           leaf_hash: validation.valid ? validation.receipt.leaf_hash : null,
           event_type: validation.valid ? validation.receipt.event_type : null,
           errors: validation.valid ? [] : validation.errors,
@@ -272,8 +289,7 @@ export function registerReceiptVerifierTools(server: McpServer) {
         };
       });
 
-      const allValid = results.every((result) => result.valid);
-      const allAnchored = results.every((result) => result.anchored);
+      const allShapeValid = results.every((result) => result.schema_valid);
 
       return {
         content: [
@@ -281,20 +297,22 @@ export function registerReceiptVerifierTools(server: McpServer) {
             type: "text" as const,
             text: JSON.stringify(
               {
-                valid: allValid,
-                status: allValid ? (allAnchored ? "anchored_chain" : "pending_chain") : "malformed_chain",
+                valid: false,
+                schema_valid: allShapeValid,
+                status: allShapeValid ? "unverified_v1_chain" : "malformed_chain",
                 count: results.length,
-                all_anchored: allAnchored,
+                all_anchored: false,
+                anchor_confirmed: false,
                 results,
                 boundary:
-                  "This validates receipt packet shape and anchor presence. It does not reconstruct external workflow causality unless the caller supplies that evidence.",
+                  "V1 chain validation is shape-only: it cannot recompute positioned proofs or confirm anchors, and it does not reconstruct workflow causality.",
               },
               null,
               2
             ),
           },
         ],
-        isError: !allValid,
+        isError: true,
       };
     }
   );
@@ -349,7 +367,9 @@ export function registerReceiptVerifierTools(server: McpServer) {
             type: "text" as const,
             text: JSON.stringify(
               {
-                valid: true,
+                schema_valid: true,
+                comparison_performed: true,
+                cryptographic_verification_performed: false,
                 all_match: allMatch,
                 comparisons,
                 boundary:
@@ -386,7 +406,7 @@ export function registerReceiptVerifierTools(server: McpServer) {
         }
 
         const typeAllowed = allowed.has(validation.receipt.event_type);
-        const anchorOk = !require_anchored || validation.anchored;
+        const anchorOk = !require_anchored;
 
         return {
           index,
@@ -394,6 +414,8 @@ export function registerReceiptVerifierTools(server: McpServer) {
           event_type: validation.receipt.event_type,
           type_allowed: typeAllowed,
           anchor_ok: anchorOk,
+          anchor_reference_present: validation.anchorReferencePresent,
+          anchor_confirmed: false,
           status: validation.status,
           leaf_hash: validation.receipt.leaf_hash,
         };
@@ -408,11 +430,13 @@ export function registerReceiptVerifierTools(server: McpServer) {
             text: JSON.stringify(
               {
                 pass,
+                metadata_policy_pass: pass,
+                cryptographic_verification_performed: false,
                 require_anchored,
                 allowed_event_types,
                 results,
                 boundary:
-                  "This audits receipt metadata against caller-supplied policy. It does not inspect private payloads or operate external rails.",
+                  "This audits v1 metadata against caller-supplied policy. V1 anchor references are never accepted as chain confirmation.",
               },
               null,
               2

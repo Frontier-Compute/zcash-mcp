@@ -1,0 +1,91 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://frontiercompute.cash/schemas/zap1-proof-bundle-v2.schema.json",
+  "title": "Official ZAP1 Proof Bundle v2 (count-bound profile)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["protocol", "version", "leaf", "proof", "root"],
+  "properties": {
+    "protocol": { "const": "ZAP1" },
+    "version": { "const": "2" },
+    "leaf": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "hash",
+        "event_type",
+        "created_at",
+        "preimage_disclosure",
+        "event_type_authentication"
+      ],
+      "properties": {
+        "hash": { "$ref": "#/$defs/hash" },
+        "event_type": { "const": "AGENT_ACTION" },
+        "created_at": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "preimage_disclosure": { "const": "withheld from the public proof bundle" },
+        "event_type_authentication": {
+          "const": "unverified_server_metadata_without_disclosed_witness"
+        }
+      }
+    },
+    "proof": {
+      "type": "array",
+      "maxItems": 64,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["hash", "position"],
+        "properties": {
+          "hash": { "$ref": "#/$defs/hash" },
+          "position": { "enum": ["left", "right"] }
+        }
+      }
+    },
+    "root": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "hash",
+        "leaf_count",
+        "created_at",
+        "scheme",
+        "legacy_allowed",
+        "legacy_max_anchor_height"
+      ],
+      "properties": {
+        "hash": { "$ref": "#/$defs/hash" },
+        "leaf_count": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 },
+        "created_at": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "scheme": { "const": "ZAP1_COUNT_BOUND_V2" },
+        "legacy_allowed": { "const": false },
+        "legacy_max_anchor_height": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "anchor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["txid", "height"],
+      "properties": {
+        "txid": {
+          "anyOf": [
+            { "$ref": "#/$defs/hash" },
+            { "type": "null" }
+          ]
+        },
+        "height": {
+          "anyOf": [
+            { "type": "integer", "minimum": 1 },
+            { "type": "null" }
+          ]
+        }
+      }
+    },
+    "verify_command": { "type": "string", "minLength": 1, "maxLength": 256 }
+  },
+  "$defs": {
+    "hash": {
+      "type": "string",
+      "pattern": "^[0-9a-fA-F]{64}$"
+    }
+  }
+}

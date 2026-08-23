@@ -1,0 +1,55 @@
+{
+  "schema": "frontier-compute.insight-zap1-receiver-package.v1",
+  "package_version": "0.1.0",
+  "runtime": {
+    "node": ">=20",
+    "package_manager": "npm",
+    "install_command": "npm ci --ignore-scripts",
+    "test_command": "npm run test:insight-receiver"
+  },
+  "layout": {
+    "package_directory": "examples/insight-zap1-receiver-v1",
+    "repository_root_relative": "../..",
+    "requires_undeclared_parent_checkout": false,
+    "archive_scope": "complete_repository_tree"
+  },
+  "network": {
+    "dependency_install": "npm registry access may be required",
+    "test_execution": "offline except for an in-process 127.0.0.1 mock",
+    "live_external_write": false,
+    "hosted_verdict_trusted": false,
+    "hosted_verify_endpoint_role": "OPTIONAL_PROVIDER_DIAGNOSTIC_ONLY_NEVER_ACCEPTANCE_AUTHORITY",
+    "legacy_v1_shape_check_accepts_hosted_verdict_as_native_proof": false,
+    "hosted_verifier_security_state": "OUTSIDE_RECEIVER_TRUST_ROOT; LOCAL_ISSUER_HARDENING_NOT_ESTABLISHED_AS_DEPLOYED"
+  },
+  "claim": "A frozen, issuer-key-signed representative Insight OracleSafetyCheck v2 demo receipt was independently valid for a separately supplied action instance at the recorded check time, and its deterministic hashes satisfy the included ZAP1 receiver contract. The fixture does not establish live provider-observation provenance.",
+  "terminal_state": "ATOMIC_RECEIVER_BINDING_LOCAL_POST_EVENT_AND_RECEIPT_V2_CONFORMANCE_PASS_NO_LIVE_WRITE_NOT_ANCHORED",
+  "security_contract": {
+    "independent_eip712_verification": true,
+    "trust_root_runtime_override": false,
+    "exact_registry_raw_sha256_pin": "9e7bc705e32280d4997c3ed3d27b5c8794c80198d2eaeaa3310893e939a7deae",
+    "unit_contract_role": "LOCAL_FIXED_POINT_INTERPRETATION_ARTIFACT_NOT_ON_CHAIN_ISSUER_CONTRACT",
+    "unit_semantics_evidence": "PINNED_PUBLIC_SOURCE; EXPLICIT_NUMERIC_ISSUER_CONFIRMATION_OR_REGISTRY_METADATA_PENDING",
+    "dynamic_registry_rotation_supported": false,
+    "live_registry_fetch_authorizes_new_trust_root": false,
+    "registry_change_behavior": "FAIL_CLOSED_AND_REOPEN",
+    "dynamic_rotation_prerequisites": [
+      "authenticated registry succession independent of mutable transport",
+      "monotonic epoch or sequence with previous-registry digest",
+      "key status, validity window, overlap, and revocation semantics",
+      "rollback-resistant last-known-good state and outage behavior",
+      "deterministic adversarial rotation and recovery tests"
+    ],
+    "atomic_replay_guard_required": true,
+    "receipt_and_registry_limit_bytes": 131072,
+    "zap1_response_limit_bytes": 65536
+  },
+  "non_authorizations": [
+    "no trade or payment authorization",
+    "no live POST /event or production attest_event call; localhost contract mock only",
+    "no deployed Merkle inclusion or production proof creation",
+    "no Zcash anchor creation or verification",
+    "no wallet, signer, key, node, provider, or deployment action",
+    "no partnership, adoption, endorsement, revenue, or payment claim"
+  ]
+}

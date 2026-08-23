@@ -1,20 +1,17 @@
 {
-  "rail_id": "external-demo",
-  "action_type": "cross_chain_route_completed",
+  "rail_id": "oracleinsight.xyz",
+  "action_type": "price_integrity_receipt_verified",
+  "agent_id": "9999999999999999999999999999999999999999999999999999999999999999",
+  "request_hash": "8888888888888888888888888888888888888888888888888888888888888888",
+  "action_instance_commitment": "7777777777777777777777777777777777777777777777777777777777777777",
   "intent_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-  "quote_hash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
-  "route_hash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
-  "origin_txid": "1111111111111111111111111111111111111111111111111111111111111111",
-  "settlement_txid": "2222222222222222222222222222222222222222222222222222222222222222",
-  "destination_txid": "3333333333333333333333333333333333333333333333333333333333333333",
-  "status": "rail_settled",
+  "status": "verification_completed",
   "disclosed_fields": [
     "rail_id",
     "action_type",
     "status",
-    "origin_txid",
-    "settlement_txid",
-    "destination_txid"
+    "request_hash",
+    "action_instance_commitment"
   ],
   "redaction_policy": "counterparty_visible",
   "counterparty_digest": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",

@@ -1,0 +1,49 @@
+{
+  "schema": "frontier-compute.insight-oracle-safety-v2-units.v1",
+  "status": "PINNED_PUBLIC_SOURCE_CONFIRMED_REGISTRY_METADATA_PENDING",
+  "source_commit": "8f84ecaa83f587b1b4a797926e1a509077c5f2f9",
+  "fields": {
+    "tradeAmountUsd": {
+      "unit": "USD",
+      "scale_decimals": 6,
+      "atoms_per_unit": "1000000",
+      "example_atoms": "10000000000",
+      "example_display": "10000.000000",
+      "source_blob": "7b8280100881d7fc30dd01a24ee4e1dc429d5297"
+    },
+    "recommendedMaxPositionUsd": {
+      "unit": "USD",
+      "scale_decimals": 6,
+      "atoms_per_unit": "1000000",
+      "example_atoms": "10000000000",
+      "example_display": "10000.000000",
+      "source_blob": "d02f310b1d7773aebd9f6b2cae6e629dd8ca24bd"
+    },
+    "consensusPrice": {
+      "unit": "USD per one source asset",
+      "scale_decimals": 8,
+      "atoms_per_unit": "100000000",
+      "example_atoms": "300012000000",
+      "example_display": "3000.12000000",
+      "source_blob": "d02f310b1d7773aebd9f6b2cae6e629dd8ca24bd"
+    },
+    "maxDeviationBps": {
+      "unit": "basis points",
+      "atoms_per_percent": "100"
+    },
+    "manipulationRiskBps": {
+      "unit": "basis points over a 0..1 risk ratio",
+      "atoms_per_one": "10000"
+    },
+    "crossProviderAgreementBps": {
+      "unit": "basis points over a 0..1 agreement ratio",
+      "atoms_per_one": "10000"
+    },
+    "maxStablecoinDepegBps": {
+      "unit": "basis points",
+      "atoms_per_percent": "100"
+    }
+  },
+  "warning": "The well-known registry did not publish unit metadata at capture. Any issuer clarification or source change reopens this contract before production use."
+}
+

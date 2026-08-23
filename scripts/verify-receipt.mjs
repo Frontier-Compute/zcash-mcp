@@ -57,10 +57,16 @@ if (
 console.log(
   JSON.stringify(
     {
-      valid: true,
-      status: receipt.anchor_txid || receipt.anchor_height !== undefined ? "anchored" : "pending",
+      valid: false,
+      schema_valid: true,
+      status: "unverified_v1_shape",
+      cryptographic_inclusion_valid: false,
+      anchor_reference_present: Boolean(receipt.anchor_txid || receipt.anchor_height !== undefined),
+      anchor_confirmed: false,
+      acceptance_ready: false,
       schema_version: "zap1-receipt-v1",
       rule: "Observe state, bound the claim, hash evidence, issue a receipt, verify later.",
+      boundary: "V1 shape validation cannot reconstruct sibling positions, the count-bound root, or Zcash anchor confirmation.",
     },
     null,
     2

@@ -1,0 +1,22 @@
+{
+  "schema": "frontier-compute.insight-action-instance.v1",
+  "action_instance_id": "insight-zap1-reference-eth-usdc-20260821-001",
+  "receiver_id": "frontier-compute/zap1-insight-reference",
+  "created_at": "2026-08-21T10:00:00.000Z",
+  "nonce": "reference-nonce-20260821-001",
+  "commitment_salt_hex": "ce163d2535ac4b68afa6d2f63fa38b91ceb0207416ea4b749b4a5178dd6d628b",
+  "purpose": "frozen interoperability conformance only",
+  "request": {
+    "subjectChainId": "1",
+    "sourceAssetId": "eip155:1/slip44:60",
+    "destinationAssetId": "eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+    "action": "swap",
+    "tradeAmountUsd": {
+      "display": "10000.000000",
+      "scale_decimals": 6,
+      "atoms": "10000000000"
+    }
+  },
+  "receipt_uid": null,
+  "execution_authorized": false
+}
