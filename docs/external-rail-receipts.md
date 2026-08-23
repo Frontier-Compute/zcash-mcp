@@ -163,6 +163,11 @@ server envelope.
 
 The legacy `zap1_verify_external_receipt` tool is intentionally shape-only for
 `zap1-receipt-v1`; it cannot reconstruct sibling order or the count-bound root.
+It also cannot promote a hosted external verifier's `valid: true` response into
+native receipt authentication. A hosted verifier may be a diagnostic, but the
+receiver must independently authenticate the external rail's signed payload,
+schema, issuer trust root, freshness, and action binding before constructing a
+ZAP1 receipt request.
 
 ## Boundaries
 
@@ -201,6 +206,8 @@ Reject an integration if it:
 - translates `verification_completed` into `rail_settled`
 - treats an unanchored receipt as final evidence
 - treats txid, height, or self-claimed status as anchor confirmation
+- treats a hosted verifier response as native cryptographic verification
+- accepts a new key from a mutable registry without authenticated succession and rollback protection
 - drops sibling positions or `leaf_count`
 - hides which fields were redacted
 - claims ZAP1 audited the external rail

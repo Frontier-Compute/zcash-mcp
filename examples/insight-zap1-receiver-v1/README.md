@@ -78,9 +78,28 @@ issuer, key id, signer, registry SHA-256, PASS-only verdict, and 600-second TTL
 cannot be changed through runtime policy. Runtime policy accepts only bounded,
 strictness-increasing risk, freshness, quorum, and clock-skew settings.
 
+## Registry and key-rotation boundary
+
+This package treats the captured registry as frozen evidence, not as a mutable
+trust root. Fetching `/.well-known/oracle-keys.json` at verification time can
+refresh evidence only when the returned raw bytes still match the package pin;
+it does not authorize a newly observed key, signer, key id, schema, or domain.
+Any such change fails closed and reopens the integration.
+
+The registry bytes frozen here publish one key, but do not define an
+independently authenticated successor, a monotonic epoch or sequence, a
+previous-registry digest, key validity and revocation fields, overlap rules, or
+rollback behavior. Production dynamic rotation therefore remains unsupported.
+Enabling it requires a separately reviewed contract covering authenticated
+succession, anti-rollback state, validity windows, overlap and revocation,
+last-known-good caching, outage behavior, and deterministic failure cases.
+Merely serving a different key from the same HTTPS origin is not sufficient.
+
 ## Fixed-point units
 
-`UNIT-CONTRACT.json` makes every numeric interpretation explicit:
+`UNIT-CONTRACT.json` is a local fixed-point interpretation artifact. It is not
+an Ethereum address, a deployed smart contract, or a claim that Insight has an
+on-chain issuer contract. It makes every numeric interpretation explicit:
 
 - `tradeAmountUsd` and `recommendedMaxPositionUsd`: USD atoms at `1e6`;
 - `consensusPrice`: USD per one source asset at `1e8`;
@@ -90,7 +109,10 @@ strictness-increasing risk, freshness, quorum, and clock-skew settings.
 Those scales are pinned to immutable public Insight source commit
 `8f84ecaa83f587b1b4a797926e1a509077c5f2f9` and exact Git blob ids. The live
 well-known registry does not currently publish the units, so a source, schema,
-or issuer clarification change is a hard reopen trigger.
+or issuer clarification change is a hard reopen trigger. A statement that the
+receipt is off-chain does not by itself confirm these numeric scales; explicit
+numeric issuer confirmation or equivalent authoritative metadata remains a
+separate production-readiness input.
 
 ## Frozen corpus labels
 
@@ -115,6 +137,16 @@ neither called nor trusted by this package. The receiver recomputes the EIP-712
 digest and canonical request hash locally, recovers the signature signer, and
 requires the exact frozen registry bytes plus the pinned issuer key. Local
 issuer hardening is not established as deployed.
+
+The hosted `POST /api/v1/safety/attestation/verify` endpoint may be used as a
+provider diagnostic, but its response cannot authorize receipt acceptance and
+cannot replace any local check. In particular, do not treat
+`zap1_verify_external_receipt` as an Insight v2 verifier: it is the legacy
+`zap1-receipt-v1` shape check and authenticates neither the EIP-712 receipt nor
+the issuer key. A fresh sample must pass this package's local native verifier
+before it can be bound to an independently supplied action. A successful
+sample signature still does not prove how the issuer obtained the underlying
+provider observations.
 
 ## Source and proof boundaries
 

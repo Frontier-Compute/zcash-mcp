@@ -18,6 +18,8 @@
     "test_execution": "offline except for an in-process 127.0.0.1 mock",
     "live_external_write": false,
     "hosted_verdict_trusted": false,
+    "hosted_verify_endpoint_role": "OPTIONAL_PROVIDER_DIAGNOSTIC_ONLY_NEVER_ACCEPTANCE_AUTHORITY",
+    "legacy_v1_shape_check_accepts_hosted_verdict_as_native_proof": false,
     "hosted_verifier_security_state": "OUTSIDE_RECEIVER_TRUST_ROOT; LOCAL_ISSUER_HARDENING_NOT_ESTABLISHED_AS_DEPLOYED"
   },
   "claim": "A frozen, issuer-key-signed representative Insight OracleSafetyCheck v2 demo receipt was independently valid for a separately supplied action instance at the recorded check time, and its deterministic hashes satisfy the included ZAP1 receiver contract. The fixture does not establish live provider-observation provenance.",
@@ -26,6 +28,18 @@
     "independent_eip712_verification": true,
     "trust_root_runtime_override": false,
     "exact_registry_raw_sha256_pin": "9e7bc705e32280d4997c3ed3d27b5c8794c80198d2eaeaa3310893e939a7deae",
+    "unit_contract_role": "LOCAL_FIXED_POINT_INTERPRETATION_ARTIFACT_NOT_ON_CHAIN_ISSUER_CONTRACT",
+    "unit_semantics_evidence": "PINNED_PUBLIC_SOURCE; EXPLICIT_NUMERIC_ISSUER_CONFIRMATION_OR_REGISTRY_METADATA_PENDING",
+    "dynamic_registry_rotation_supported": false,
+    "live_registry_fetch_authorizes_new_trust_root": false,
+    "registry_change_behavior": "FAIL_CLOSED_AND_REOPEN",
+    "dynamic_rotation_prerequisites": [
+      "authenticated registry succession independent of mutable transport",
+      "monotonic epoch or sequence with previous-registry digest",
+      "key status, validity window, overlap, and revocation semantics",
+      "rollback-resistant last-known-good state and outage behavior",
+      "deterministic adversarial rotation and recovery tests"
+    ],
     "atomic_replay_guard_required": true,
     "receipt_and_registry_limit_bytes": 131072,
     "zap1_response_limit_bytes": 65536
