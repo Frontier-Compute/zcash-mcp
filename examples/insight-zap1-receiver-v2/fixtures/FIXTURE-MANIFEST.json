@@ -1,0 +1,58 @@
+{
+  "schema": "frontier-compute.insight-rotation-fixture-manifest.v3",
+  "classification": "PUBLIC_ENDPOINT_CAPTURES_AND_SYNTHETIC_TEST_INPUTS_ONLY",
+  "registry_snapshot": {
+    "url": "https://www.oracleinsight.xyz/.well-known/oracle-keys.json",
+    "method": "GET",
+    "captured_at_utc": "2026-08-31T22:11:30.5384978Z",
+    "body_file": "registry-20260831.body.b64",
+    "body_bytes": 9004,
+    "body_sha256": "42be76e202a6db2058b5778677bc08145b3acdd8bd94e4909c652ee0643cc6a4"
+  },
+  "original_successor_sample": {
+    "body_file": "sample-new-key-20260831.body.b64",
+    "body_bytes": 3700,
+    "body_sha256": "52aed6365667e3a6579c5aae75d1b6f9832592def2d4269fb4586cbf11995f12",
+    "receipt_signed_at": "2026-08-31T20:23:12.683Z",
+    "role": "FROZEN_PUBLIC_ENDPOINT_SIGNATURE_FIXTURE"
+  },
+  "current_at_capture_sample": {
+    "url": "https://www.oracleinsight.xyz/api/v1/safety/attestation/sample",
+    "method": "GET",
+    "body_file": "sample-new-key-20260901-current.body.b64",
+    "capture_metadata_file": "sample-new-key-20260901-current.capture.json",
+    "body_bytes": 3700,
+    "body_sha256": "5ddd5be720456ac4d971a13471b49c654b0fe5c7ca609f397cf3c37b89824ab4",
+    "checked_at_seconds": 1788270365,
+    "valid_until_seconds": 1788270965,
+    "receipt_uid": "0xafe9744fcd24a29b5341f79b96946f1239f0be6cc06e6e2473d7243bab94d58e",
+    "signer": "0x6506F789Edd43338A416f59822A63F309f97E8ce",
+    "role": "FROZEN_PUBLIC_ENDPOINT_CRYPTOGRAPHIC_FIXTURE_NOT_CURRENT_AFTER_EXPIRY"
+  },
+  "public_v3_snapshot": {
+    "captured_at_utc": "2026-09-03T13:41:04.942Z",
+    "registry_url": "https://www.oracleinsight.xyz/.well-known/oracle-keys.json",
+    "registry_body_file": "registry-v3-20260903.body.json",
+    "registry_body_bytes": 17958,
+    "registry_body_sha256": "7cc00b957f14e1a954bcbff7dd0b5e97b9f4af1ef8c2e21cb9fa879339ce7330",
+    "sample_url": "https://www.oracleinsight.xyz/api/v1/safety/attestation/sample",
+    "sample_body_file": "sample-v3-20260903.body.json",
+    "sample_body_bytes": 4052,
+    "sample_body_sha256": "bbdadd7aff0e7f9b692959af7829c86eb5ed50ad2331a49e4bde02ec952b689e",
+    "schema_version": 3,
+    "domain_version": "3",
+    "field_count": 27,
+    "sample_signer_role": "sample",
+    "transport": "GET_ONLY_NO_CREDENTIALS_NO_RETRIES"
+  },
+  "publication_boundary": {
+    "private_correspondence_packaged": false,
+    "private_rotation_signature_transcript_packaged": false,
+    "registry_snapshot_is_mutable_public_state": true,
+    "registry_membership_is_key_admission_authority": false,
+    "sample_receipt_is_production_observation": false,
+    "provider_write_performed": false,
+    "production_store_mutated": false,
+    "action_authorized": false
+  }
+}
