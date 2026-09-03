@@ -38,7 +38,7 @@ function canonicalTextBytes(bytes) {
 export async function verifySourceManifest() {
   const manifestFile = path.join(packageDirectory, "SOURCE-MANIFEST.json");
   const manifest = await json(manifestFile);
-  assert.equal(manifest.schema, "frontier-compute.insight-zap1-source-manifest.v2");
+  assert.equal(manifest.schema, "frontier-compute.insight-zap1-source-manifest.v3");
   assert.equal(manifest.hash_algorithm, "sha256");
   assert.equal(manifest.raw_byte_sha256_controlling, true);
   assert.equal(manifest.canonical_text_sha256_role, "secondary portability cross-check only");
@@ -47,6 +47,7 @@ export async function verifySourceManifest() {
   assert.deepEqual(manifest.excluded_from_self_hash, [manifestRelativePath]);
   assert.deepEqual(manifest.complete_roots, [
     "examples/insight-zap1-receiver-v1",
+    "examples/insight-zap1-receiver-v2",
     "src",
     "schemas",
   ]);

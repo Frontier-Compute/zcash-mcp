@@ -1,0 +1,18 @@
+{
+  "schema": "frontier-compute.insight-live-capture-fixture.v1",
+  "source_url": "https://www.oracleinsight.xyz/api/v1/safety/attestation/sample",
+  "capture_role": "GET_ONLY_PUBLIC_SAMPLE_OFFLINE_FIXTURE",
+  "captured_on_date_utc": "2026-09-01",
+  "base64_file_bytes": 5001,
+  "decoded_body_bytes": 3700,
+  "decoded_body_sha256": "5ddd5be720456ac4d971a13471b49c654b0fe5c7ca609f397cf3c37b89824ab4",
+  "receipt_uid": "0xafe9744fcd24a29b5341f79b96946f1239f0be6cc06e6e2473d7243bab94d58e",
+  "checked_at_seconds": 1788270365,
+  "valid_until_seconds": 1788270965,
+  "signer": "0x6506F789Edd43338A416f59822A63F309f97E8ce",
+  "registry_sha256": "42be76e202a6db2058b5778677bc08145b3acdd8bd94e4909c652ee0643cc6a4",
+  "http_freshness_replayed": false,
+  "hosted_verify_called": false,
+  "write_performed": false,
+  "note": "The signed receipt bytes are frozen for offline cryptographic tests. Tests construct deterministic local freshness evidence at checkedAt+1; they do not claim that frozen HTTP headers remain current."
+}

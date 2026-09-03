@@ -16,7 +16,9 @@
     "check:receipts": "node scripts/verify-receipt.mjs examples/operator-lifecycle-receipt.json && node scripts/verify-receipt.mjs examples/payment-receipt.json && node scripts/verify-receipt.mjs examples/counterparty-receipt.json && node scripts/verify-receipt.mjs examples/grant-proof-packet.json && node scripts/verify-receipt.mjs examples/compliance-audit-packet.json",
     "test:offline": "npm run check:positioning && npm run check:receipts && npm run build && node scripts/test-stdio.mjs && node scripts/test-attest-contract.mjs && node scripts/test-packed-install.mjs",
     "test:live": "npm run build && node test/e2e.mjs",
-    "test:insight-receiver": "npm run build && node examples/insight-zap1-receiver-v1/test-package.mjs"
+    "test:insight-receiver": "npm run build && node examples/insight-zap1-receiver-v1/test-package.mjs && node examples/insight-zap1-receiver-v2/test-rotation.mjs && node examples/insight-zap1-receiver-v2/test-sample-diagnostic.mjs",
+    "test:insight-live-sample": "node examples/insight-zap1-receiver-v2/live-sample-check.mjs",
+    "audit:release": "npm audit --omit=dev --audit-level=high && npm audit --audit-level=high"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.12.1",

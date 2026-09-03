@@ -1,15 +1,19 @@
-name: offline-ci
+name: dependency-security-audit
 
 permissions:
   contents: read
 
 on:
   push:
+    branches:
+      - main
   pull_request:
+  schedule:
+    - cron: "41 7 * * *"
   workflow_dispatch:
 
 jobs:
-  offline:
+  audit:
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
@@ -25,11 +29,8 @@ jobs:
           node-version: "22.22.2"
           cache: npm
 
-      - name: Install dependencies
+      - name: Install exact locked dependencies without lifecycle scripts
         run: npm ci --ignore-scripts
 
-      - name: Run offline verification
-        run: npm run test:offline
-
-      - name: Run Insight receiver verification
-        run: npm run test:insight-receiver
+      - name: Reject high or critical production and development advisories
+        run: npm run audit:release

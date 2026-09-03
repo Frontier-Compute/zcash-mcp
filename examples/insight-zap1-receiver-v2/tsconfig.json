@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "Node16",
+    "moduleResolution": "Node16",
+    "strict": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "types": ["node"]
+  },
+  "include": [
+    "reference.ts",
+    "production-reference.ts",
+    "production-runtime-worker.ts",
+    "production-reference.e2e.ts",
+    "rotation-adapter.d.mts",
+    "rotation-attestation.d.mts"
+  ]
+}

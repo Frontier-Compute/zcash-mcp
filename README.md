@@ -99,6 +99,27 @@ Poor fits:
 - broadcasting shielded spends
 - replacing a wallet SDK
 
+## Oracle Insight receipt verification
+
+The public receiver reference supports exact OracleSafetyCheck v2/v3 schema
+dispatch. V3 is pinned to EIP-712 domain version `3`, the ordered 27-field
+type, and signed `requiredSourceGroupCount = 2`. The v2 compatibility API is
+v2-only, while historical v2 inspection can resolve through the published
+`OracleSafetyCheckV2` alias.
+
+The sample diagnostic verifies the UID and EIP-712 signature under exactly one
+active registry key with role `sample`, then always returns
+`UNKNOWN_BLOCKED / SYNTHETIC_SAMPLE_ONLY`. It accepts no observation, commits
+no replay state, and emits no ZAP1 action binding.
+
+Run `npm run test:insight-receiver` for frozen and synthetic coverage, or
+`npm run test:insight-live-sample` for a two-GET read-only diagnostic. See
+[the v2/v3 receiver notes](examples/insight-zap1-receiver-v2/README.md).
+
+Mutable registry bytes never admit a signer or trust head. Private
+correspondence and private rotation-signature transcripts are not part of this
+public reference.
+
 ## Customer Flow
 
 Use `zcash_receipt_template` first when you are wiring ZAP1 into a product. It
