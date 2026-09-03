@@ -1,5 +1,6 @@
 /.gitattributes text eol=lf
 /examples/insight-zap1-receiver-v1/** text eol=lf
+/examples/insight-zap1-receiver-v2/** text eol=lf
 /src/** text eol=lf
 /schemas/** text eol=lf
 /package.json text eol=lf
