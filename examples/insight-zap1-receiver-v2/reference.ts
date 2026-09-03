@@ -1,14 +1,16 @@
 import {
   gateRegistryStatusFreshness,
   unavailableCurrentObservation,
-  verifyCurrentObservation,
-  type ObservationInputs,
   type ObservationResult,
 } from "./rotation-adapter.mjs";
 import {
   registryFreshnessFromHeaders,
   type RegistryFreshnessEvidence,
 } from "./http-freshness.mjs";
+import {
+  verifyCapturedSampleDiagnostic,
+  type CapturedSampleDiagnosticResult,
+} from "./sample-diagnostic.mjs";
 
 const REGISTRY_URL = "https://www.oracleinsight.xyz/.well-known/oracle-keys.json";
 const SAMPLE_URL = "https://www.oracleinsight.xyz/api/v1/safety/attestation/sample";
@@ -19,6 +21,15 @@ export interface PublicObservationInput {
   actionInstance: unknown;
   unitContract: unknown;
   policy?: Record<string, unknown>;
+}
+
+export interface PublicSampleObservationResult extends ObservationResult {
+  readonly diagnostic_valid: boolean;
+  readonly replay_state: "NOT_COMMITTED";
+  readonly action_authorized: false;
+  readonly registry_transport_sha256: string | null;
+  readonly sample_transport_sha256: string | null;
+  readonly sample_signer: string | null;
 }
 
 export interface CapturedJson<T> {
@@ -32,10 +43,6 @@ export interface CapturedJson<T> {
     readonly responseDate: string | null;
     readonly observedAtSeconds: number;
   };
-}
-
-interface PublicSampleResponse {
-  data?: { attestation?: unknown };
 }
 
 async function getBoundedJson<T>(url: string): Promise<CapturedJson<T>> {
@@ -95,7 +102,7 @@ async function getBoundedJson<T>(url: string): Promise<CapturedJson<T>> {
   }
 }
 
-function assertNonAuthorizing(result: ObservationResult): ObservationResult {
+function assertNonAuthorizing<T extends ObservationResult>(result: T): T {
   if (
     result.schema !== "frontier-compute.insight-receiver-result.v2" ||
     result.current_action_eligible !== false ||
@@ -109,16 +116,78 @@ function assertNonAuthorizing(result: ObservationResult): ObservationResult {
   return result;
 }
 
-function classifyPublicSampleOnly(result: ObservationResult): ObservationResult {
-  if (result.decision !== "OBSERVATION_ONLY") return result;
+function sampleDiagnosticObservation(result: CapturedSampleDiagnosticResult): PublicSampleObservationResult {
+  const native = result.verification?.native;
+  const recoveredSigner = native?.recoveredSigner;
+  const selectedSigner = native?.selectedKey?.signer;
+  const signerMatches =
+    typeof recoveredSigner === "string" &&
+    typeof selectedSigner === "string" &&
+    recoveredSigner === selectedSigner;
   return {
-    ...result,
+    schema: "frontier-compute.insight-receiver-result.v2",
     decision: "UNKNOWN_BLOCKED",
+    current_action_eligible: false,
+    signature_state: result.signature_state,
+    cryptographic_signature_state: result.cryptographic_signature_state,
+    recovered_signer_matches_selected_key: signerMatches,
+    issuer_key_continuity_state: "NOT_APPLICABLE_SAMPLE_ROLE",
+    registry_status_state: result.diagnostic_valid
+      ? "SAMPLE_ROLE_VERIFIED_DIAGNOSTIC_ONLY"
+      : "SAMPLE_ROLE_NOT_ESTABLISHED",
+    receipt_policy_state: result.diagnostic_valid ? "PASSED_DIAGNOSTIC_ONLY" : "NOT_ESTABLISHED",
     observation_state: "NOT_ACCEPTED",
-    code: "SYNTHETIC_SAMPLE_ONLY",
+    action_state: "ACTION_AUTHORIZATION_BLOCKED",
+    code: result.code,
+    stage: "sample_diagnostic",
     retryable: false,
-    customer_message: "The public sample is synthetic diagnostic material. Its receipt was not accepted as an observation.",
-    operator_action: "Supply exact caller-owned receipt bytes through the production observation API.",
+    customer_message: result.detail,
+    operator_action: result.code === "SYNTHETIC_SAMPLE_ONLY"
+      ? "Supply exact caller-owned receipt bytes through the production observation API."
+      : "Inspect the named sample-diagnostic failure; do not treat the public sample as an observation.",
+    trust: null,
+    time: {
+      evaluated_at: result.evaluated_at_seconds,
+      checked_at: native?.checkedAt ?? null,
+      receipt_valid_until: native?.validUntil ?? null,
+      key_valid_from: native?.selectedKey?.validFrom ?? null,
+      key_valid_until: native?.selectedKey?.validUntil ?? null,
+    },
+    receipt: result.sample_transport_sha256 ? {
+      ...(result.receipt_uid ? { uid: result.receipt_uid } : {}),
+      transport_sha256: result.sample_transport_sha256,
+      transport_source: "PUBLIC_SAMPLE_RESPONSE",
+    } : null,
+    evidence: null,
+    verification: result.verification,
+    binding: null,
+    zap1_external_action_args: null,
+    zap1_agent_action_args: null,
+    non_authorizations: [
+      "NO_OBSERVATION_ACCEPTANCE",
+      "NO_REPLAY_COMMIT",
+      "NO_TRADE_OR_EXECUTION_AUTHORITY",
+      "NO_ZAP1_ATTESTATION_OR_WRITE",
+      "NO_PAYMENT_OR_WALLET_ACTION",
+    ],
+    diagnostic_valid: result.diagnostic_valid,
+    replay_state: "NOT_COMMITTED",
+    action_authorized: false,
+    registry_transport_sha256: result.registry_transport_sha256,
+    sample_transport_sha256: result.sample_transport_sha256,
+    sample_signer: result.sample_signer,
+  };
+}
+
+function unavailablePublicSample(detail: string): PublicSampleObservationResult {
+  return {
+    ...unavailableCurrentObservation(detail),
+    diagnostic_valid: false,
+    replay_state: "NOT_COMMITTED",
+    action_authorized: false,
+    registry_transport_sha256: null,
+    sample_transport_sha256: null,
+    sample_signer: null,
   };
 }
 
@@ -128,27 +197,23 @@ function classifyPublicSampleOnly(result: ObservationResult): ObservationResult 
  * It cannot accept an observation, return an executable action, perform a
  * ZAP1 write, or produce a payment/wallet instruction.
  */
-export async function verifyPublicCurrentObservation(input: PublicObservationInput): Promise<ObservationResult> {
+export async function verifyPublicCurrentObservation(input: PublicObservationInput): Promise<PublicSampleObservationResult> {
   try {
     const [registry, sample] = await Promise.all([
       getBoundedJson<unknown>(REGISTRY_URL),
-      getBoundedJson<PublicSampleResponse>(SAMPLE_URL),
+      getBoundedJson<unknown>(SAMPLE_URL),
     ]);
-    const receipt = sample.value.data?.attestation;
-    if (!receipt || typeof receipt !== "object") throw new Error("sample response is missing data.attestation");
-    const receiverInput: ObservationInputs = {
-      receipt,
-      receiptRaw: sample.raw,
-      registry: registry.value,
+    const result = sampleDiagnosticObservation(verifyCapturedSampleDiagnostic({
       registryRaw: registry.raw,
+      sampleRaw: sample.raw,
       actionInstance: input.actionInstance,
       unitContract: input.unitContract,
+      atSeconds: registry.cache.observedAtSeconds,
       ...(input.policy ? { policy: input.policy } : {}),
-    };
-    const result = gateRegistryStatusFreshness(verifyCurrentObservation(receiverInput), registry.freshness);
-    return assertNonAuthorizing(classifyPublicSampleOnly(result));
+    }));
+    return assertNonAuthorizing(gateRegistryStatusFreshness(result, registry.freshness));
   } catch (error) {
     const detail = error instanceof Error ? error.message : "read-only dependency failure";
-    return assertNonAuthorizing(unavailableCurrentObservation(detail));
+    return assertNonAuthorizing(unavailablePublicSample(detail));
   }
 }

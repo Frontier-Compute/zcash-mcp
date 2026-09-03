@@ -60,15 +60,15 @@ export interface RegistryTransportStatus {
 
 export function verifyCurrentObservation(args: ObservationInputs): ObservationResult;
 export function verifyHistoricalObservation(args: ObservationInputs & { atSeconds: number }): ObservationResult;
-export function gateRegistryStatusFreshness(
-  result: ObservationResult,
+export function gateRegistryStatusFreshness<T extends ObservationResult>(
+  result: T,
   status: {
     ageSeconds: number | null;
     maxAgeSeconds: number | null;
     observedAtSeconds: number | null;
     responseDateSeconds: number | null;
   }
-): ObservationResult & { transport_status: RegistryTransportStatus };
+): T & { transport_status: RegistryTransportStatus };
 
 export function unavailableCurrentObservation(detail: unknown): ObservationResult;
 export function evaluatePinnedKeyLifecycle(

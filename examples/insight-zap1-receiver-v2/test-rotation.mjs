@@ -41,12 +41,22 @@ function percentile(values, fraction) {
 }
 
 export async function runRotationTests() {
-  const [unitContract, actionInstance, sampleB64, registryB64, fixtureManifest] = await Promise.all([
+  const [
+    unitContract,
+    actionInstance,
+    sampleB64,
+    registryB64,
+    fixtureManifest,
+    publicV3RegistryRaw,
+    publicV3SampleRaw,
+  ] = await Promise.all([
     readJson(v1, "UNIT-CONTRACT.json"),
     readJson(v1, "ACTION-INSTANCE.json"),
     readFile(path.join(here, "fixtures", "sample-new-key-20260831.body.b64"), "utf8"),
     readFile(path.join(here, "fixtures", "registry-20260831.body.b64"), "utf8"),
     readJson(here, "fixtures", "FIXTURE-MANIFEST.json"),
+    readFile(path.join(here, "fixtures", "registry-v3-20260903.body.json")),
+    readFile(path.join(here, "fixtures", "sample-v3-20260903.body.json")),
   ]);
   const sampleRaw = Buffer.from(sampleB64.replace(/\s/g, ""), "base64");
   assert.equal(sampleRaw.length, fixtureManifest.original_successor_sample.body_bytes);
@@ -366,9 +376,11 @@ export async function runRotationTests() {
   const referenceSource = await readFile(path.join(here, "reference.ts"), "utf8");
   const runtimeSpecifier = JSON.stringify(pathToFileURL(path.join(here, "rotation-adapter.mjs")).href);
   const freshnessSpecifier = JSON.stringify(pathToFileURL(path.join(here, "http-freshness.mjs")).href);
+  const sampleDiagnosticSpecifier = JSON.stringify(pathToFileURL(path.join(here, "sample-diagnostic.mjs")).href);
   const runnableReferenceSource = referenceSource
     .replace('"./rotation-adapter.mjs"', runtimeSpecifier)
-    .replace('"./http-freshness.mjs"', freshnessSpecifier);
+    .replace('"./http-freshness.mjs"', freshnessSpecifier)
+    .replace('"./sample-diagnostic.mjs"', sampleDiagnosticSpecifier);
   const transpiledReference = ts.transpileModule(runnableReferenceSource, {
     compilerOptions: { module: ts.ModuleKind.ESNext, target: ts.ScriptTarget.ES2022, strict: true },
     fileName: "reference.ts",
@@ -378,45 +390,79 @@ export async function runRotationTests() {
   const referenceModule = await import(`data:text/javascript;base64,${Buffer.from(transpiledReference.outputText).toString("base64")}`);
   const originalFetch = globalThis.fetch;
   const originalConsoleLog = console.log;
-  const referenceDate = new Date(atSeconds * 1000).toUTCString();
   const responseFor = (body, freshness = true) => new Response(body, {
     status: 200,
     headers: {
       "content-type": "application/json",
       "content-length": String(body.byteLength),
-      ...(freshness ? { age: "0", "cache-control": "public, max-age=300", date: referenceDate } : {}),
+      ...(freshness ? { age: "0", "cache-control": "public, max-age=300", date: new Date(Date.now()).toUTCString() } : {}),
     },
   });
   try {
-    Date.now = () => atSeconds * 1000;
+    const publicV3Sample = JSON.parse(publicV3SampleRaw);
+    const publicV3AtSeconds = Number(publicV3Sample.data.attestation.data.checkedAt) + 1;
+    Date.now = () => publicV3AtSeconds * 1000;
     globalThis.fetch = async (url, options) => {
       assert.equal(options.method, "GET");
       assert.equal(options.redirect, "error");
       assert.equal(options.cache, "no-store");
       assert.equal(options.headers["cache-control"], "no-cache");
-      return String(url).includes("oracle-keys.json") ? responseFor(registryRaw) : responseFor(sampleRaw);
+      return String(url).includes("oracle-keys.json")
+        ? responseFor(publicV3RegistryRaw)
+        : responseFor(publicV3SampleRaw);
     };
     const referenceResult = await referenceModule.verifyPublicCurrentObservation({ actionInstance, unitContract });
     assert.equal(referenceResult.decision, "UNKNOWN_BLOCKED");
-    assert.equal(referenceResult.code, "ISSUER_KEY_CONTINUITY_UNRESOLVED");
+    assert.equal(referenceResult.code, "SYNTHETIC_SAMPLE_ONLY");
+    assert.equal(referenceResult.diagnostic_valid, true);
     assert.equal(referenceResult.signature_state, "VERIFIED");
     assert.equal(referenceResult.transport_status.state, "WITHIN_LOCAL_FRESHNESS_BOUND");
+    assert.equal(referenceResult.observation_state, "NOT_ACCEPTED");
+    assert.equal(referenceResult.replay_state, "NOT_COMMITTED");
     assert.equal(referenceResult.current_action_eligible, false);
+    assert.equal(referenceResult.action_authorized, false);
+    assert.equal(referenceResult.trust, null);
     assert.equal(referenceResult.binding, null);
+    assert.equal(referenceResult.zap1_external_action_args, null);
+    assert.equal(referenceResult.zap1_agent_action_args, null);
+
+    const tamperedPublicV3Sample = structuredClone(publicV3Sample);
+    tamperedPublicV3Sample.data.attestation.signature =
+      tamperedPublicV3Sample.data.attestation.signature.slice(0, -1) +
+      (tamperedPublicV3Sample.data.attestation.signature.endsWith("0") ? "1" : "0");
+    const tamperedPublicV3SampleRaw = Buffer.from(JSON.stringify(tamperedPublicV3Sample));
+    globalThis.fetch = async (url) => String(url).includes("oracle-keys.json")
+      ? responseFor(publicV3RegistryRaw)
+      : responseFor(tamperedPublicV3SampleRaw);
+    const tamperedReferenceResult = await referenceModule.verifyPublicCurrentObservation({ actionInstance, unitContract });
+    assert.equal(tamperedReferenceResult.decision, "UNKNOWN_BLOCKED");
+    assert.equal(tamperedReferenceResult.code, "SAMPLE_DIAGNOSTIC_VERIFICATION_FAILED");
+    assert.equal(tamperedReferenceResult.diagnostic_valid, false);
+    assert.equal(tamperedReferenceResult.signature_state, "NOT_VERIFIED");
+    assert.equal(tamperedReferenceResult.observation_state, "NOT_ACCEPTED");
+    assert.equal(tamperedReferenceResult.replay_state, "NOT_COMMITTED");
+    assert.equal(tamperedReferenceResult.action_authorized, false);
+    assert.equal(tamperedReferenceResult.binding, null);
+
+    globalThis.fetch = async (url) => String(url).includes("oracle-keys.json")
+      ? responseFor(publicV3RegistryRaw, false)
+      : responseFor(publicV3SampleRaw);
+    const missingFreshnessResult = await referenceModule.verifyPublicCurrentObservation({ actionInstance, unitContract });
+    assert.equal(missingFreshnessResult.decision, "UNKNOWN_BLOCKED");
+    assert.equal(missingFreshnessResult.code, "SYNTHETIC_SAMPLE_ONLY");
+    assert.equal(missingFreshnessResult.registry_transport_blocker_code, "REGISTRY_STATUS_FRESHNESS_UNKNOWN");
+
+    Date.now = () => atSeconds * 1000;
+    globalThis.fetch = async (url) => String(url).includes("oracle-keys.json")
+      ? responseFor(registryRaw)
+      : responseFor(sampleRaw);
     console.log = () => {};
     const cliResult = await runLiveCheck({ jsonOnly: true });
     console.log = originalConsoleLog;
     assert.equal(cliResult.exitCode, 3);
-    assert.equal(cliResult.output.code, referenceResult.code);
-    assert.equal(cliResult.output.signature.state, referenceResult.signature_state);
-    assert.equal(cliResult.output.registry_transport_status.state, referenceResult.transport_status.state);
-
-    globalThis.fetch = async (url) => String(url).includes("oracle-keys.json")
-      ? responseFor(registryRaw, false)
-      : responseFor(sampleRaw);
-    const missingFreshnessResult = await referenceModule.verifyPublicCurrentObservation({ actionInstance, unitContract });
-    assert.equal(missingFreshnessResult.decision, "UNKNOWN_BLOCKED");
-    assert.equal(missingFreshnessResult.registry_transport_blocker_code, "REGISTRY_STATUS_FRESHNESS_UNKNOWN");
+    assert.equal(cliResult.output.code, "ISSUER_KEY_CONTINUITY_UNRESOLVED");
+    assert.equal(cliResult.output.signature.state, "VERIFIED");
+    assert.equal(cliResult.output.registry_transport_status.state, "WITHIN_LOCAL_FRESHNESS_BOUND");
 
     globalThis.fetch = async () => { throw new Error("synthetic dependency outage"); };
     const dependencyResult = await referenceModule.verifyPublicCurrentObservation({ actionInstance, unitContract });
@@ -582,9 +628,10 @@ export async function runRotationTests() {
       excessive_json_depth: "REJECTED_BEFORE_PARSE",
       caller_time_current_mode: "REJECTED",
       typescript_reference_execution: "PASS",
+      typescript_reference_sample_role: "SYNTHETIC_SAMPLE_ONLY",
       typescript_reference_missing_freshness: "UNKNOWN_BLOCKED",
       typescript_reference_dependency_failure: "UNKNOWN_BLOCKED",
-      cli_typescript_semantic_parity: "PASS",
+      cli_current_observation_execution: "PASS",
     },
     performance: {
       iterations: sequentialDurations.length,

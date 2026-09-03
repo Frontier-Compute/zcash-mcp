@@ -28,6 +28,8 @@ function blocked(code, detail, atSeconds = null) {
     evaluated_at_seconds: atSeconds,
     registry_transport_sha256: null,
     sample_transport_sha256: null,
+    receipt_uid: null,
+    sample_signer: null,
     detail,
     verification: null,
   });

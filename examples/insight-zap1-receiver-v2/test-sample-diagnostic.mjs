@@ -60,6 +60,23 @@ assert.equal(verified.binding, null);
 assert.equal(verified.zap1_external_action_args, null);
 assert.equal(verified.zap1_agent_action_args, null);
 
+const malformed = verifyCapturedSampleDiagnostic({
+  registryRaw,
+  sampleRaw: Buffer.from("{"),
+  actionInstance,
+  unitContract,
+  atSeconds: checkedAt + 1,
+});
+assert.equal(malformed.decision, "UNKNOWN_BLOCKED");
+assert.equal(malformed.code, "SAMPLE_DIAGNOSTIC_INPUT_INVALID");
+assert.equal(malformed.diagnostic_valid, false);
+assert.equal(malformed.receipt_uid, null);
+assert.equal(malformed.sample_signer, null);
+assert.equal(malformed.observation_state, "NOT_ACCEPTED");
+assert.equal(malformed.replay_state, "NOT_COMMITTED");
+assert.equal(malformed.action_authorized, false);
+assert.equal(malformed.binding, null);
+
 const tamperedSample = structuredClone(sample);
 tamperedSample.data.attestation.signature =
   tamperedSample.data.attestation.signature.slice(0, -1) +
